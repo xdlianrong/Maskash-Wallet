@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="zh">
+    <head>
+        <meta charset="utf-8">
+        <title>wallet</title>
+        <link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
+    </head>
+    <body>
+        <el-row id="app" style="padding-top: 40%;">
+            <el-col :span="8" :offset="8"><img src="./wallet-outline.svg"></el-col>
+            <div style="background: #f2f2f2;">
+                <el-col :span="10" :offset="7" class="button">
+                    <p style="margin: 0.5rem;">创建钱包</p>
+                </el-col>
+                <el-col :span="10" :offset="7" class="button">
+                    <p style="margin: 0.5rem;">加载钱包</p>
+                </el-col>
+            </div>
+        </el-row>
+    </body>
+    <script crossorigin="anonymous" integrity="sha512-h3aCJRk6tEHugDYUidF7GqixhzgeXSiSdq5U+5oLIJtIncSQq6eev48qqYfuTdrsH5Q1eO4IAmyJGDwzRaWNNQ==" src="https://lib.baomitu.com/vue/2.6.12/vue.common.dev.js"></script>
+    <script src="https://unpkg.com/element-ui/lib/index.js"></script>
+    <script>new Vue().$mount('#app')</script>
+    <style>
+        .button {
+            font-size: 1.8rem;
+            margin-top: 0.3rem;
+            text-align: center;
+            background: rgb(83, 138, 190);
+            border-radius: 4px;
+        }
+
+        .eliocn {
+            font-size: 8rem;        
+        }
+        
+    </style>
+</html>
