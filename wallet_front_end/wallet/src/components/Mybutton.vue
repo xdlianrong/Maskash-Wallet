@@ -16,7 +16,7 @@
 
     .border {
         border-radius: 4px;
-        border: #f2f2f2 10px solid;
+        border: #f2f2f2 9px solid;
     }
 </style>
 <script>

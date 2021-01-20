@@ -16,16 +16,21 @@
                     <mybutton :buttonMsg="bm" style="margin-top: 2.5rem;" @click.native="register">创建钱包</mybutton>
                 </el-col>
             </el-row>
+            <backbutton></backbutton>
   </div>
 </template>
 
 <script>
 // @ is an alias to /src
 import mybutton from '../components/Mybutton.vue'
+import backbutton from '../components/backbutton'
+import Backbutton from '../components/backbutton.vue'
 
 export default {
     components: {
-        mybutton
+        mybutton,
+        backbutton,
+        Backbutton
     },
     data() {
         return {
@@ -37,7 +42,15 @@ export default {
     },
     methods: {
         register() {
-            console.log("?"); 
+            this.axios.post('http://localhost:4396/wallet/register', {
+                name: this.name,
+                id: this.id,
+                str: this.string
+            }).then((response)=>{
+                console.log(response)
+            }).catch((response)=>{
+                console.log(response);
+            })
         }
     }
 }

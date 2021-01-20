@@ -7,7 +7,7 @@
 <style>
     #app {
             position: relative;
-            top: 40%;
+            top: 45%;
             transform: translateY(-50%);
     }
 
