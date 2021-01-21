@@ -16,6 +16,6 @@
         text-align: center;
     }
     .emenu {
-        top: -50%;
+        display: flex;
     }
 </style>
