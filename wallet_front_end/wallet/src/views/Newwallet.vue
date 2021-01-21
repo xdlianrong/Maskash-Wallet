@@ -62,10 +62,10 @@ export default {
 }
 </script>
 <style>
-#o {
-            position: relative;
-            top: 50%;
-            transform: translateY(-50%);
+    #o {
+        position: relative;
+        top: 45%;
+        transform: translateY(-50%);
     }   
     .imfo {
         text-align: center;    

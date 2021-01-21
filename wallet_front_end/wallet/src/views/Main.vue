@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div id="o">
     <el-row>
             <!-- 图片也可以换成 element 自带的 -->
             <el-row type="flex" justify="center"><el-col :xs="7" :sm="5" :md="3" :lg="2" :xl="2"><img src="../assets/wallet-outline.svg"></el-col></el-row> 

@@ -5,9 +5,9 @@
 </template>
 
 <style>
-    
-
-    
+    #app {
+      height: 100%;
+    }
 
     router-link {
           text-decoration: none;
