@@ -52,5 +52,7 @@
 - 购币即是兑换积分，文档中二者概念等同，一般情况多指购币。
 - 业界的区块链钱包保存用户的地址，由于匿名计算链并不具有地址，而是使用一条财产数据来替代（财产数据格式：随机数+公钥）。
 
-## 关联项目
+## 关联项目/文档
 - [Geth-Comments](https://github.com/xdlianrong/Geth-Comments)
+- [RPC-API](https://github.com/xdlianrong/Geth-Comments/blob/master/dev/RPC%20API%E7%9A%84%E6%9B%B4%E6%94%B9%E6%97%A5%E5%BF%97%E5%92%8C%E4%BD%BF%E7%94%A8%E8%AF%B4%E6%98%8E.md)
+- [Regulator监管者](https://github.com/xdlianrong/Geth-Comments/tree/master/Regulator)
