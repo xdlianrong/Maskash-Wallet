@@ -51,12 +51,15 @@ export default {
                 str: this.string
                 }).then((response)=>{
                     this.$message.success('创建成功');
+                    this.$router.push({
+                        path: '/Mainaction'
+                    })
                     console.log(response)
                 }).catch((response)=>{
+                    this.$message.error('创建失败，请重试');
                     console.log(response);
                 })
             }
-            
         }
     }
 }
