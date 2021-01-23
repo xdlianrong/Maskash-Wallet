@@ -26,9 +26,8 @@ func main() {
 	g := e.Group("/wallet")
 	{
 		g.POST("/register", controllers.Register)
-		// file 是个大坑
-		// 方便自动二次拉取
-		g.Static("/html", "./wallet_front_end")
+		g.POST("/buycoin", controllers.Buycoin)
+		g.POST("/exchange", controllers.ExchangeCoin)
 	}
 	// 网页的静态文件
 	// 启动服务，平滑关闭

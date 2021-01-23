@@ -16,7 +16,7 @@ var (
 	Getpuburl    = "http://39.106.173.191:1423/regkey?chainID=1"
 	Ethurl       = "http://127.0.0.1:8545"
 	RegulatorURL = "http://39.106.173.191:1423/" // 监管方URL
-	ExchangeURL  = "http://127.0.0.1:1323/"
+	ExchangeURL  = "http://39.105.58.136:1323/"
 )
 
 func ethRPCPost(data interface{}, url string) []byte {

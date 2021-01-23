@@ -1,25 +1,23 @@
 package controllers
 
 import (
+	"encoding/hex"
+	"encoding/json"
 	"fmt"
 	"github.com/labstack/echo"
 	"net/http"
 	"wallet/ELGamal"
+	"wallet/model"
 )
 
 const (
 	ErrorValue   = "value cannot be empty"
 	RejectServer = "Server Error"
+
 )
 
-type NewWallet struct {
-	Name string `json:"name" form:"name" query:"name"`
-	Id   string `json:"id" form:"id" query:"id"`
-	Str  string `json:"str" form:"str" query:"str"`
-}
-
 func Register(c echo.Context) error {
-	w := new(NewWallet)
+	w := new(model.NewWallet)
 	// 因为 echo 的 bind 无绑定检查功能
 	// echo 强制要求 post 的参数写在 body 里，写在 header 里会绑定不上
 	if err := c.Bind(w); err != nil {
@@ -78,3 +76,51 @@ func register(account ELGamal.Account) string {
 	}
 	return string(body)
 }
+
+// 39.105.58.136
+func Buycoin(c echo.Context) error {
+	w := new(model.BctoEx)
+	if err := c.Bind(w); err != nil {
+		return c.JSON(http.StatusInternalServerError, err)
+	}
+	// 向交易所发出购币请求
+	body := ethRPCPost(w, ExchangeURL+"buy")
+	var receipt Receipt
+	json.Unmarshal(body, &receipt)
+	if receipt.Cmv == "" || receipt.Epkrc1 == "" || receipt.Epkrc2 == "" || receipt.Hash == "" {
+		return c.JSON(http.StatusBadRequest, ErrorValue)
+	} else {
+		// 购买成功,随机数解密在前端进行
+		return c.JSON(http.StatusOK, receipt)
+	}
+}
+
+func ExchangeCoin (c echo.Context) error {
+	w := new(model.ExchangeCoin)
+	if err := c.Bind(w); err != nil {
+		return c.JSON(http.StatusInternalServerError, err)
+	}
+	coin := decryptCoinReceipt(w.Receipt, w.Priv)
+	return c.JSON(http.StatusOK, coin)
+}
+
+func decryptCoinReceipt(recript Receipt, priv ELGamal.PrivateKey) Coin {
+	return Coin{
+		Cmv:  recript.Cmv,
+		Vor:  decrypt(recript.Epkrc1, recript.Epkrc2, priv),
+		Hash: recript.Hash,
+	}
+}
+
+//	解密随机数密文
+func decrypt(hex0xStringC1 string, hex0xStringC2 string, priv PrivateKey) string {
+	hexData1, _ := hex.DecodeString(hex0xStringC1[2:])
+	hexData2, _ := hex.DecodeString(hex0xStringC2[2:])
+	C := ELGamal.CypherText{
+		C1: hexData1,
+		C2: hexData2,
+	}
+	M := fmt.Sprintf("0x%x", ELGamal.Decrypt(priv, C))
+	return M
+}
+
