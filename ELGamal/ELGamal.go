@@ -2,11 +2,20 @@ package ELGamal
 
 import (
 	"crypto/sha256"
+	"fmt"
 	"math/big"
 	"math/rand"
 	"strconv"
 	"time"
 )
+
+type PrivStr struct {
+	G1         string `json:"G1"`
+	G2         string `json:"G2"`
+	P          string `json:"P"`
+	Publickey  string `json:"publickey"`
+	Privatekey string `json:"privatekey"`
+}
 
 // 学长写的
 // PublicKey 公钥
@@ -18,6 +27,37 @@ type PublicKey struct {
 type PrivateKey struct {
 	PublicKey
 	X *big.Int
+}
+
+type Account struct {
+	Pub  PublicKey  `json:"Pub"`
+	Priv PrivateKey `json:"Priv"`
+	Info struct {
+		Name    string `json:"Name"`
+		ID      string `json:"ID"`
+		Hashky  string `json:"Hashky"`
+		ExtInfo string `json:"ExtInfo"`
+	} `json:"Info"`
+}
+
+func GenerateAccount(randString string, name string, id string, extInfo string) Account {
+	pub, priv, _ := GenerateKeys(randString)
+	fmt.Println("生成账户"+name, "私钥：", priv.X.String())
+	return Account{
+		Pub:  pub,
+		Priv: priv,
+		Info: struct {
+			Name    string `json:"Name"`
+			ID      string `json:"ID"`
+			Hashky  string `json:"Hashky"`
+			ExtInfo string `json:"ExtInfo"`
+		}{
+			Name:    name,
+			ID:      id,
+			Hashky:  pub.H.String(),
+			ExtInfo: extInfo,
+		},
+	}
 }
 
 func GenerateKeys(info string) (pub PublicKey, priv PrivateKey, err error) {
@@ -71,5 +111,14 @@ func GenerateKeys(info string) (pub PublicKey, priv PrivateKey, err error) {
 	pub.H.Exp(pub.G2, priv.X, pub.P)
 	priv.H = pub.H
 
+	return
+}
+
+func (account Account) KeyToString() (privStr PrivStr) {
+	privStr.G1 = fmt.Sprintf("%0*x", 64, account.Pub.G1)
+	privStr.G2 = fmt.Sprintf("%0*x", 64, account.Pub.G2)
+	privStr.P = fmt.Sprintf("%0*x", 64, account.Pub.P)
+	privStr.Publickey = fmt.Sprintf("%0*x", 64, account.Pub.H)
+	privStr.Privatekey = fmt.Sprintf("%0*x", 64, account.Priv.X)
 	return
 }
