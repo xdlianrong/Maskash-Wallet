@@ -4,7 +4,8 @@
         <el-menu-item index="1" @click="con(1)" ref="no">购币</el-menu-item>
         <el-menu-item index="2" @click="con(2)">转账</el-menu-item>
         <el-menu-item index="3" @click="con(3)">收款</el-menu-item>
-        <el-menu-item index="4" @click="con(4)">我的</el-menu-item>
+        <el-menu-item index="4" @click="con(4)">历史</el-menu-item>
+        <el-menu-item index="5" @click="con(5)">我的</el-menu-item>
     </el-menu>
 </template>
 <script>
@@ -30,7 +31,7 @@ export default {
         text-align: center;
     }
     .el-menu--horizontal>.el-menu-item {
-        width: 25%;
+        width: 20%;
         text-align: center;
     }
     .emenu {
