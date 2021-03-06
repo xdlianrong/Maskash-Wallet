@@ -6,7 +6,7 @@
             <div v-if="cmp == 1">
                 <p>购买金额:</p>
                 <el-input maxlength="10" v-model="money" ></el-input>
-                <mybutton :buttonMsg="buy" @click.native="transferm"></mybutton>
+                <mybutton :buttonMsg="buy" @click.native="buym"></mybutton>
             </div>
 
             <div v-if="cmp == 2" style="top: 10%;">
@@ -14,25 +14,22 @@
                 <el-input maxlength="10" v-model="money" ></el-input>
                 <p>转账金额:</p>
                 <el-input maxlength="10" v-model="money" ></el-input>
-                <p>找零金额:</p>
-                <el-input maxlength="10" v-model="money" ></el-input>
-                <p>承诺:</p>
-                <el-input maxlength="10" v-model="money" ></el-input>
-                <p>承诺随机数:</p>
-                <el-input maxlength="10" v-model="money" ></el-input>
+                <!-- 上面这些够了，可以返回东西了 -->
                 <mybutton :buttonMsg="transfer" @click.native="transferm"></mybutton>
             </div>
 
             <div v-if="cmp == 3">
-                <p>shoukuan:</p>
+                <p>收款方公钥</p>
                 <el-input maxlength="10" v-model="money" ></el-input>
-                <mybutton :buttonMsg="recv" @click.native="transferm"></mybutton>
+                <mybutton :buttonMsg="recv" @click.native="recm"></mybutton>
             </div>
 
             <div v-if="cmp == 4">
-                <p>转账金额:</p>
-                <el-input maxlength="10" v-model="money" ></el-input>
                 
+            </div>
+
+            <div v-if="cmp == 5">
+                <mybutton :buttonMsg="signout" @click.native="signoutf"></mybutton>
             </div>
             </el-col>
         </el-row>
@@ -51,6 +48,7 @@ export default {
             transfer: '发起转账',
             buy: '购买',
             recv: '收款',
+            signout: '登出',
             money: '',
             cmp: '1', // 用来改变显示的组件
         }
@@ -68,6 +66,11 @@ export default {
         changecmps(index) {
             this.cmp = index;
             console.log(this.cmp);
+        },
+        signoutf() {
+            this.$router.push({
+                path: '/'
+            })
         }
     }
 }

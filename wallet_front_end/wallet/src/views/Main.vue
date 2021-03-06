@@ -31,6 +31,13 @@ export default {
             addbutton: "加载钱包",
             newbutton: "新建钱包"
         }
+    },
+    created: function () {
+        // 浏览器不支持，警告
+        if(!window.localStorage){
+            this.$alert('浏览器版本过低，请更换浏览器', '警告', {
+          confirmButtonText: '确定'});
+        }
     }
 }
 </script>

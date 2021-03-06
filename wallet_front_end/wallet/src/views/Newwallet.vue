@@ -45,12 +45,18 @@ export default {
             if (this.id == '' || this.name == '' || this.string == '') {
                 this.$message.error ('提交的信息不能为空');
             } else {
-                this.axios.post('http://localhost:4396/wallet/register', {
+                this.axios.post('http://localhost:1998/wallet/register', {
                 name: this.name,
                 id: this.id,
                 str: this.string
                 }).then((response)=>{
-                    this.$message.success('创建成功');
+                    this.$message.success('创建成功'); 
+                    // 创建成功后加入 localstorage
+                    var storage = window.localStorage;
+                    var imfo = {};
+                    imfo.bi = response.data;
+                    storage.setItem(this.string, JSON.stringify(imfo));
+                    console.log(storage);
                     this.$router.push({
                         path: '/Mainaction'
                     })
