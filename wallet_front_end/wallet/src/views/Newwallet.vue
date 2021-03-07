@@ -57,6 +57,7 @@ export default {
                     imfo.bi = response.data;
                     storage.setItem(this.string, JSON.stringify(imfo));
                     console.log(storage);
+                    // 跳转
                     this.$router.push({
                         path: '/Mainaction'
                     })

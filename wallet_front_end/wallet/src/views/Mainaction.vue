@@ -38,6 +38,7 @@
 <script>
 import navmenu from '../components/Navmenu'
 import mybutton from '../components/Mybutton'
+var account = '';
 export default {
     components: {
         navmenu,
@@ -51,7 +52,12 @@ export default {
             signout: '登出',
             money: '',
             cmp: '1', // 用来改变显示的组件
+            account
         }
+    },
+    mounted: function () {
+        account = this.$route.params.account;
+        console.log(account);
     },
     methods: {
         transferm() {

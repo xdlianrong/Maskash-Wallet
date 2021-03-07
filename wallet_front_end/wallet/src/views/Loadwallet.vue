@@ -1,14 +1,53 @@
 <template>
     <div>
-        <p>等能读取本地了我再写吧</p>
+        <ul class="infinite-list"  style="overflow:auto;padding:0;">
+            <li v-for="name in list" :key="name.id" class="infinite-list-item" @click="signin(name)">{{ name }}</li>
+        </ul>
         <backbutton></backbutton>
     </div>
 </template>
 <script>
 import backbutton from '../components/Backbutton'
-export default {
+var list = new Array(); 
+export default {    
     components: {
         backbutton
+    },
+    data () {
+        return {
+            list
+        }
+    },
+    mounted: function () {
+        // 填充 list 数组
+        var storage = window.localStorage;
+        for(var i = 0; i < storage.length; i++) {
+            if (storage.key(i) != 'loglevel:webpack-dev-server') {
+                list.push(storage.key(i));
+            }
+            console.log(storage.key(i));
+        }
+    },
+    methods: {
+        signin (name) {
+            this.$router.push({
+                path: '/Mainaction',
+                params: {
+                    account: name
+                }
+            })
+        }
     }
 }
 </script>
+<style>
+    .infinite-list .infinite-list-item {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        height: 50px;
+        background: #e8f3fe;
+        margin: 10px;
+        color: #7dbcfc;
+    }
+</style>
