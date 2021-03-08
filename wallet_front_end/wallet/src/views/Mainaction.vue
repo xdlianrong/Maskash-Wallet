@@ -31,6 +31,7 @@
             </div>
 
             <div v-if="cmp == 5">
+                <mybutton :buttonMsg="showImfo" @click.native="showImfof"></mybutton>
                 <mybutton :buttonMsg="signout" @click.native="signoutf"></mybutton>
             </div>
             </el-col>
@@ -52,6 +53,7 @@ export default {
             buy: '购买',
             recv: '收款',
             signout: '登出',
+            showImfo: '显示账户信息',
             money: '',
             cmp: '1', // 用来改变显示的组件
             account,
@@ -60,8 +62,8 @@ export default {
             moneyProm: '',
         }
     },
-    mounted: function () {
-        account = this.$route.params.account;
+    created: function () {
+        account = this.$route.query.account;
         if (account == undefined) {
             this.$message.error({
                 message: '请登录账户',
@@ -79,7 +81,7 @@ export default {
     methods: {
         transferm() {
             console.log("我要转账");
-             this.axios.post('http://localhost:1998/wallet/register', {
+            this.axios.post('http://localhost:1998/wallet/register', {
                 recPub: this.recPub,
                 transmoney: this.transmoney,
                 moneyProm: this.moneyProm
@@ -90,6 +92,14 @@ export default {
         },
         buym() {
             console.log("我要购币");
+            this.axios.post('http://localhost:1998/wallet/register', {
+                recPub: this.recPub,
+                transmoney: this.transmoney,
+                moneyProm: this.moneyProm
+                }).then((response)=>{
+                // 一堆赋值，我也忘了要存啥了
+                console.log(response);
+            })
         },
         recm() {
             console.log("我要收款");
@@ -102,6 +112,11 @@ export default {
             this.$router.push({
                 path: '/'
             })
+        },
+        showImfof() {
+            var imfo = (JSON.parse(window.localStorage.getItem(account))).bi;
+            this.$alert(JSON.stringify(imfo), {
+                confirmButtonText: '确定',});
         }
     }
 }

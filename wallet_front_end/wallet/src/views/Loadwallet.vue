@@ -19,13 +19,16 @@ export default {
         }
     },
     mounted: function () {
-        // 填充 list 数组
+        // 填充 list 数组        
         var storage = window.localStorage;
-        for(var i = 0; i < storage.length; i++) {
+        // 防止再次填充 list
+        if (list.length < storage.length - 1) {
+            for(var i = 0; i < storage.length; i++) {
             if (storage.key(i) != 'loglevel:webpack-dev-server') {
                 list.push(storage.key(i));
             }
             console.log(storage.key(i));
+            }
         }
     },
     methods: {
@@ -33,7 +36,7 @@ export default {
             this.$router.push({
                 name: 'Mainaction', // 没有这句会 undefined
                 path: '/Mainaction',
-                params: {
+                query: {
                     account: name
                 }
             })
