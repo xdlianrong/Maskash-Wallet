@@ -11,9 +11,11 @@
 
             <div v-if="cmp == 2" style="top: 10%;">
                 <p>收款方公钥:</p>
-                <el-input maxlength="10" v-model="money" ></el-input>
+                <el-input maxlength="10" v-model="recPub" ></el-input>
                 <p>转账金额:</p>
-                <el-input maxlength="10" v-model="money" ></el-input>
+                <el-input maxlength="10" v-model="transmoney" ></el-input>
+                <p>代币承诺</p>
+                <el-input maxlength="10" v-model="moneyProm" ></el-input>
                 <!-- 上面这些够了，可以返回东西了 -->
                 <mybutton :buttonMsg="transfer" @click.native="transferm"></mybutton>
             </div>
@@ -38,7 +40,7 @@
 <script>
 import navmenu from '../components/Navmenu'
 import mybutton from '../components/Mybutton'
-var account = '';
+var account;
 export default {
     components: {
         navmenu,
@@ -52,16 +54,39 @@ export default {
             signout: '登出',
             money: '',
             cmp: '1', // 用来改变显示的组件
-            account
+            account,
+            recPub: '',
+            transmoney: '',
+            moneyProm: '',
         }
     },
     mounted: function () {
         account = this.$route.params.account;
-        console.log(account);
+        if (account == undefined) {
+            this.$message.error({
+                message: '请登录账户',
+                duration: 1400
+            }); 
+            setTimeout(() => {
+                this.$router.push({
+                    path: '/',
+                    name: 'Main',
+                })
+            }, 1500);
+            
+        }
     },
     methods: {
         transferm() {
             console.log("我要转账");
+             this.axios.post('http://localhost:1998/wallet/register', {
+                recPub: this.recPub,
+                transmoney: this.transmoney,
+                moneyProm: this.moneyProm
+                }).then((response)=>{
+                // 一堆赋值，我也忘了要存啥了
+                console.log(response);
+            })
         },
         buym() {
             console.log("我要购币");
@@ -71,9 +96,9 @@ export default {
         },
         changecmps(index) {
             this.cmp = index;
-            console.log(this.cmp);
         },
         signoutf() {
+            account = undefined;
             this.$router.push({
                 path: '/'
             })

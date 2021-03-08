@@ -50,7 +50,10 @@ export default {
                 id: this.id,
                 str: this.string
                 }).then((response)=>{
-                    this.$message.success('创建成功'); 
+                    this.$message.success({
+                        message: '创建成功',
+                        duration: 1500
+                    }); 
                     // 创建成功后加入 localstorage
                     var storage = window.localStorage;
                     var imfo = {};
@@ -58,10 +61,15 @@ export default {
                     storage.setItem(this.string, JSON.stringify(imfo));
                     console.log(storage);
                     // 跳转
-                    this.$router.push({
-                        path: '/Mainaction'
-                    })
-                    console.log(response)
+                    setTimeout(() => {
+                        this.$router.push({
+                            name: 'Mainaction',
+                            path: '/Mainaction',
+                            params: {
+                                account: this.string,
+                            }
+                        })
+                    }, 1500);
                 }).catch((response)=>{
                     this.$message.error('创建失败，请重试');
                     console.log(response);

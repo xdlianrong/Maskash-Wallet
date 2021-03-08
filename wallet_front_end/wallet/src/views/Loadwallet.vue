@@ -31,6 +31,7 @@ export default {
     methods: {
         signin (name) {
             this.$router.push({
+                name: 'Mainaction', // 没有这句会 undefined
                 path: '/Mainaction',
                 params: {
                     account: name
