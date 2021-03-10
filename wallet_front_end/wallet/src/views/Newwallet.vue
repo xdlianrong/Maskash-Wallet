@@ -41,24 +41,28 @@ export default {
         }
     },
     methods: {
+        Account(imfo) {
+            this.imfo = imfo;
+            this.history = new Array();
+        },
         register() {
             if (this.id == '' || this.name == '' || this.string == '') {
                 this.$message.error ('提交的信息不能为空');
             } else {
-                this.axios.post('http://localhost:1998/wallet/register', {
+                this.axios.post('http://localhost:4396/wallet/register', {
                 name: this.name,
                 id: this.id,
                 str: this.string
                 }).then((response)=>{
+                    console.log(response);
                     this.$message.success({
                         message: '创建成功',
                         duration: 1500
                     }); 
                     // 创建成功后加入 localstorage
                     var storage = window.localStorage;
-                    var imfo = {};
-                    imfo.bi = response.data;
-                    storage.setItem(this.string, JSON.stringify(imfo));
+                    response.data;
+                    storage.setItem(this.string, JSON.stringify(new this.Account(response.data)));
                     console.log(storage);
                     // 跳转
                     setTimeout(() => {

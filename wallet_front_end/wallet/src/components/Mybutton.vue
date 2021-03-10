@@ -5,12 +5,12 @@
 </template>
 <style>
     .button {
-        font-size: 1.2rem;
+        font-size: 1.1rem;
         text-align: center;
         background: #59aafa;
         border-radius: 4px;
         color: white;
-        line-height: 3.5rem;
+        line-height: 3.3rem;
         box-shadow: 0 2px 4px rgba(0, 0, 0, .12), 0 0 6px rgba(0, 0, 0, .04);
     }
 

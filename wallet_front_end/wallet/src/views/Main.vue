@@ -35,7 +35,7 @@ export default {
     created: function () {
         // 浏览器不支持，警告
         if(!window.localStorage){
-            this.$alert('浏览器版本过低，请更换浏览器', '警告', {
+            this.$alert('浏览器版本过低，请更换浏览器或关闭隐私模式', '警告', {
           confirmButtonText: '确定'});
         }
     }

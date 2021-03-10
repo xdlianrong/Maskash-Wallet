@@ -14,8 +14,7 @@ export default {
         con(index) {
             console.log(index);
             // 修改父组件的值
-            this.$emit('changecmp', index);
-            
+            this.$emit('changecmp', index);    
         }
     },
     mounted: function () {
