@@ -11,10 +11,10 @@
 
             <div v-show="cmp == 2">
                 <p>收款方公钥:</p>
-                <el-input maxlength="10" v-model="recPub" style="margin-top:7px;"></el-input>
-                <el-input maxlength="10" v-model="recPub" style="margin-top:7px;"></el-input>
-                <el-input maxlength="10" v-model="recPub" style="margin-top:7px;"></el-input>
-                <el-input maxlength="10" v-model="recPub" style="margin-top:7px;"></el-input>
+                <el-input v-model="G1" placeholder="G1"></el-input>
+                <el-input v-model="G2" placeholder="G2" style="margin-top:10px;"></el-input>
+                <el-input v-model="P" placeholder="P" style="margin-top:10px;"></el-input>
+                <el-input v-model="H" placeholder="H" style="margin-top:10px;"></el-input>
                 <p>转账金额:</p>
                 <el-input maxlength="10" v-model="transmoney" ></el-input>
                 <p>代币承诺</p>
@@ -26,8 +26,8 @@
             </div>
 
             <div v-show="cmp == 3">
-                <p>收款方公钥</p>
-                <el-input maxlength="10" v-model="money" ></el-input>
+                 <p>交易hash</p>
+                <el-input v-model="hash" ></el-input>
                 <mybutton :buttonMsg="recv" @click.native="recm"></mybutton>
             </div>
 
@@ -61,11 +61,14 @@ export default {
             showImfo: '显示账户信息',
             money: '',
             cmp: '1', // 用来改变显示的组件
-            account,
-            recPub: '',
             transmoney: '',
             moneyProm: '',
             r: '',
+            G1: '',
+            G2: '',
+            P: '',
+            H: '',
+            hash: ''
         }
     },
     created: function () {
@@ -96,21 +99,33 @@ export default {
             window.localStorage.account = JSON.stringify(old);
             console.log(window.localStorage.account);
         },
+        Pub(G1, G2, P, H) {
+            this.G1 = G1;
+            this.G2 = G2;
+            this.P = P;
+            this.H = H;
+        },
         transferm() {
             console.log("我要转账");
             var pri = this.getPri();
-            this.axios.post('http://localhost:4396/wallet/register', {
-                    pri: pri,
-                }).then((response)=>{
-                // 一堆赋值，我也忘了要存啥了
-                console.log(response);
-            })
+            this.axios.post('http://localhost:4396/wallet/buyCoin', {
+                priA: pri,
+                account: this.transmoney,
+                    pubB: new this.Pub(this.G1, this.G2, this.P, this.H),
+                cmv: this.moneyProm,
+                r: this.r
+            }).then((response)=>{
+                this.storeImfo(response);
+            }).catch((response)=>{
+                    this.$message.error(response);
+                    console.log(response);
+            });
         },
         buym() {
             console.log("我要购币");
             var pri = this.getPri();
             this.axios.post('http://localhost:4396/wallet/buyCoin', {
-                priA: pri,
+                pri: pri,
                 account: this.buym
             }).then((response)=>{
                 this.storeImfo(response);
@@ -122,6 +137,16 @@ export default {
         },
         recm() {
             console.log("我要收款");
+            var pri = this.getPri();
+            this.axios.post('http://localhost:4396/wallet/buyCoin', {
+                pri: pri,
+                hash: this.hash
+            }).then((response)=>{
+                this.storeImfo(response);
+            }).catch((response)=>{
+                    this.$message.error(response);
+                    console.log(response);
+            });
         },
         changecmps(index) {
             this.cmp = index;
