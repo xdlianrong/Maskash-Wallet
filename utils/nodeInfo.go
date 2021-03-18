@@ -1,4 +1,4 @@
-package controllers
+package utils
 
 type NodeInfo struct {
 	Jsonrpc string `json:"jsonrpc"`
@@ -94,9 +94,10 @@ type Receipt struct {
 	Hash   string `json:"hash"` //此次购币交易的交易哈希
 }
 type Coin struct {
-	Cmv  string `json:"cmv"`
-	Vor  string `json:"vor"`
-	Hash string `json:"hash"`
+	Cmv    string `json:"cmv"`
+	Vor    string `json:"vor"`
+	Hash   string `json:"hash"`
+	Amount string `json:"amount"`
 }
 type RPCtx struct {
 	Jsonrpc string `json:"jsonrpc"`
@@ -177,13 +178,13 @@ type RPCtx struct {
 	} `json:"result"`
 }
 
-type sendRPCTx struct {
+type SendRPCTx struct {
 	Jsonrpc string            `json:"jsonrpc"`
 	Method  string            `json:"method"`
-	Params  []sendRPCTxParams `json:"params"`
+	Params  []SendRPCTxParams `json:"params"`
 	ID      int               `json:"id"`
 }
-type sendRPCTxParams struct {
+type SendRPCTxParams struct {
 	From     string `json:"from"`
 	To       string `json:"to"`
 	Gas      string `json:"gas"`

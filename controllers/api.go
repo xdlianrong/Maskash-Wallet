@@ -6,8 +6,10 @@ import (
 	"fmt"
 	"github.com/labstack/echo"
 	"net/http"
+	"strconv"
 	"wallet/ELGamal"
 	"wallet/model"
+	"wallet/utils"
 )
 
 const (
@@ -23,7 +25,6 @@ func Register(c echo.Context) error {
 		return c.JSON(http.StatusInternalServerError, err)
 	}
 	// 暂时只能验证是否为空
-	fmt.Println("绑定完成")
 	if w.Id == "" || w.Name == "" || w.Str == "" {
 		return c.JSON(http.StatusBadRequest, ErrorValue)
 	}
@@ -84,13 +85,17 @@ func Buycoin(c echo.Context) error {
 	}
 	// 向交易所发出购币请求
 	body := ethRPCPost(w, ExchangeURL+"buy")
-	var receipt Receipt
+	var receipt utils.Receipt
 	json.Unmarshal(body, &receipt)
+
 	if receipt.Cmv == "" || receipt.Epkrc1 == "" || receipt.Epkrc2 == "" || receipt.Hash == "" {
 		return c.JSON(http.StatusBadRequest, ErrorValue)
 	} else {
-		// 购买成功,随机数解密在前端进行
-		return c.JSON(http.StatusOK, receipt)
+		// 购买成功,随机数解密
+		privKey := utils.CreatePriKey(w.G1, w.G2, w.P, w.H, w.X)
+		coin := decryptCoinReceipt(receipt, privKey, w.Amount)
+		utils.MineTx(8545, coin.Hash)
+		return c.JSON(http.StatusOK, coin)
 	}
 }
 
@@ -99,15 +104,51 @@ func ExchangeCoin(c echo.Context) error {
 	if err := c.Bind(w); err != nil {
 		return c.JSON(http.StatusInternalServerError, err)
 	}
-	coin := decryptCoinReceipt(w.Receipt, w.Priv)
-	return c.JSON(http.StatusOK, coin)
+	senderPriv := utils.CreatePriKey(w.SG1, w.SG2, w.SP, w.SH, w.SX)
+	reciverPub := utils.CreatePubKey(w.RG1, w.RG2, w.RP, w.RH)
+	coin := utils.Coin{
+		Cmv:    w.Cmv,
+		Vor:    w.Vor,
+		Amount: w.Amount,
+	}
+	amount, _ := strconv.Atoi(coin.Amount)
+	spend, _ := strconv.Atoi(w.Spend)
+	senderGethAccount := utils.EthAccounts(8545)[0]
+	receiverGethAccount := utils.EthAccounts(8545)[0]
+	txHash := utils.EthSendTransaction(8545, senderGethAccount, receiverGethAccount, senderPriv, reciverPub, coin, amount, spend)
+	utils.MineTx(8545, txHash)
+	rpcTx := utils.EthGetTransactionByHash(8545, txHash)
+	tx := rpcTx.Result
+	returnCoin := utils.Coin{
+		Cmv:    tx.Cmr,
+		Vor:    decrypt(tx.Cmrrc1, tx.Cmrrc2, senderPriv),
+		Hash:   txHash,
+		Amount: strconv.Itoa(amount - spend),
+	}
+	return c.JSON(http.StatusOK, returnCoin)
 }
-
-func decryptCoinReceipt(recript Receipt, priv ELGamal.PrivateKey) Coin {
-	return Coin{
-		Cmv:  recript.Cmv,
-		Vor:  decrypt(recript.Epkrc1, recript.Epkrc2, priv),
-		Hash: recript.Hash,
+func Receive(c echo.Context) error {
+	w := new(model.ReceiveData)
+	if err := c.Bind(w); err != nil {
+		return c.JSON(http.StatusInternalServerError, err)
+	}
+	privKey := utils.CreatePriKey(w.G1, w.G2, w.P, w.H, w.X)
+	rpcTx := utils.EthGetTransactionByHash(8545, w.Hash)
+	tx := rpcTx.Result
+	returnCoin := utils.Coin{
+		Cmv:    tx.Cmr,
+		Vor:    decrypt(tx.Cmsrc1, tx.Cmsrc2, privKey),
+		Hash:   w.Hash,
+		Amount: decryptValue(tx.Evsbsc1, tx.Evsbsc2, privKey),
+	}
+	return c.JSON(http.StatusOK, returnCoin)
+}
+func decryptCoinReceipt(recript utils.Receipt, priv ELGamal.PrivateKey, amount string) utils.Coin {
+	return utils.Coin{
+		Cmv:    recript.Cmv,
+		Vor:    decrypt(recript.Epkrc1, recript.Epkrc2, priv),
+		Hash:   recript.Hash,
+		Amount: amount,
 	}
 }
 
@@ -120,5 +161,17 @@ func decrypt(hex0xStringC1 string, hex0xStringC2 string, priv ELGamal.PrivateKey
 		C2: hexData2,
 	}
 	M := fmt.Sprintf("0x%x", ELGamal.Decrypt(priv, C))
+	return M
+}
+
+//	解密随机数密文
+func decryptValue(hex0xStringC1 string, hex0xStringC2 string, priv ELGamal.PrivateKey) string {
+	hexData1, _ := hex.DecodeString(hex0xStringC1[2:])
+	hexData2, _ := hex.DecodeString(hex0xStringC2[2:])
+	C := ELGamal.CypherText{
+		C1: hexData1,
+		C2: hexData2,
+	}
+	M := fmt.Sprintf("0x%x", ELGamal.DecryptValue(priv, C))
 	return M
 }

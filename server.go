@@ -17,22 +17,23 @@ func main() {
 	// 跨域请求配置
 
 	e.Use(middleware.CORSWithConfig(middleware.CORSConfig{
-		AllowOrigins: []string{"*"},
-		AllowHeaders: []string{echo.HeaderAccept, echo.HeaderOrigin, echo.HeaderContentType},
-		AllowMethods: []string{echo.GET, echo.PUT, echo.POST},
-		AllowCredentials: true,	// 允许 cookie
-		MaxAge: 43200})) // 预检结果能保留 12h
+		AllowOrigins:     []string{"*"},
+		AllowHeaders:     []string{echo.HeaderAccept, echo.HeaderOrigin, echo.HeaderContentType},
+		AllowMethods:     []string{echo.GET, echo.PUT, echo.POST},
+		AllowCredentials: true,    // 允许 cookie
+		MaxAge:           43200})) // 预检结果能保留 12h
 	// 一组路由
 	g := e.Group("/wallet")
 	{
-		g.POST("/register", controllers.Register)
-		g.POST("/buycoin", controllers.Buycoin)
-		g.POST("/exchange", controllers.ExchangeCoin)
+		g.POST("/register", controllers.Register)     //注册
+		g.POST("/buycoin", controllers.Buycoin)       //购币
+		g.POST("/exchange", controllers.ExchangeCoin) //转账
+		g.POST("/receive", controllers.Receive)       //收款
 	}
 	// 网页的静态文件
 	// 启动服务，平滑关闭
 	go func() {
-		if err := e.Start(":4396"); err != nil{
+		if err := e.Start(":4396"); err != nil {
 			e.Logger.Fatal("Fail to star with error:%v", err)
 		}
 	}()
@@ -44,7 +45,7 @@ func main() {
 	// 留 5s 处理已经接受的请求，然后关闭服务
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
-	if err := e.Shutdown(ctx); err != nil{
+	if err := e.Shutdown(ctx); err != nil {
 		e.Logger.Fatal("Fail to shutdown with error", err)
 	}
 }

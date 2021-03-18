@@ -1,4 +1,4 @@
-# walle
+# wallet
 
 ## Project setup
 ```
