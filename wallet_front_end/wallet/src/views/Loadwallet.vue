@@ -1,7 +1,9 @@
 <template>
     <div>
         <ul class="infinite-list"  style="overflow:auto;padding:0;">
-            <li v-for="name in list" :key="name.id" class="infinite-list-item" @click="signin(name)">{{ name }}</li>
+            <li v-for="name in list" :key="name.id" class="infinite-list-item" @click="signin(name)">{{ name }}
+                <i class="el-icon-delete" style="position: absolute;right:20px"></i>
+            </li>
         </ul>
         <backbutton></backbutton>
     </div>

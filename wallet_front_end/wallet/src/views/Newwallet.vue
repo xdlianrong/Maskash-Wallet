@@ -49,10 +49,10 @@ export default {
             if (this.id == '' || this.name == '' || this.string == '') {
                 this.$message.error ('提交的信息不能为空');
             } else {
-                this.axios.post('http://localhost:4396/wallet/register', {
-                name: this.name,
-                id: this.id,
-                str: this.string
+                this.axios.post('http://39.105.58.136:4396/wallet/register', {
+                    name: this.name,
+                    id: this.id,
+                    str: this.string
                 }).then((response)=>{
                     console.log(response);
                     this.$message.success({

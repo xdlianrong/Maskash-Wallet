@@ -1,12 +1,18 @@
 <template>
 <!-- 其实可以用 Tab 实现 -->
-    <el-menu mode="horizontal" class="emenu" background-color="rgb(5, 126, 214)" active-text-color="white" text-color="rgb(89, 162, 214)">
-        <el-menu-item index="1" @click="con(1)" ref="no">购币</el-menu-item>
-        <el-menu-item index="2" @click="con(2)">转账</el-menu-item>
-        <el-menu-item index="3" @click="con(3)">收款</el-menu-item>
-        <el-menu-item index="4" @click="con(4)">历史</el-menu-item>
-        <el-menu-item index="5" @click="con(5)">我的</el-menu-item>
-    </el-menu>
+    <div>
+        <el-card>
+            <span style="font-size: 0.8rem;">余额</span>
+            <span style="font-size: 1.5rem; ">&emsp;0</span>
+        </el-card>
+        <el-menu mode="horizontal" class="emenu" background-color="rgb(5, 126, 214)" active-text-color="white" text-color="rgb(89, 162, 214)">
+            <el-menu-item index="1" @click="con(1)" ref="no">购币</el-menu-item>
+            <el-menu-item index="2" @click="con(2)">转账</el-menu-item>
+            <el-menu-item index="3" @click="con(3)">收款</el-menu-item>
+            <el-menu-item index="4" @click="con(4)">历史</el-menu-item>
+            <el-menu-item index="5" @click="con(5)">我的</el-menu-item>
+        </el-menu>
+    </div>
 </template>
 <script>
 export default {
@@ -38,5 +44,16 @@ export default {
     }
     .el-menu-item.is-active {
         background-color: rgb(2, 100, 170) !important;
+    }
+    .el-card {
+        border: none !important;
+        background-color:#1656b9 !important;
+        color: white !important;
+        text-align: center;
+        /* display: flex;
+        justify-content: center; */
+    }
+    .el-card, .el-message {
+        border-radius: 0 !important;
     }
 </style>

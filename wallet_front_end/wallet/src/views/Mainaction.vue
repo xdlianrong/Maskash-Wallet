@@ -16,6 +16,8 @@
                 <el-input v-model="P" placeholder="P" style="margin-top:10px;"></el-input>
                 <el-input v-model="pub" placeholder="pub" style="margin-top:10px;"></el-input>
                 <p>转账金额:</p>
+                <el-input maxlength="10" v-model="spend" ></el-input>
+                <p>承诺金额</p>
                 <el-input maxlength="10" v-model="transmoney" ></el-input>
                 <p>代币承诺</p>
                 <el-input maxlength="10" v-model="moneyProm" ></el-input>
@@ -85,7 +87,8 @@ export default {
             P: '',
             pub: '',
             hash: '',
-            hisList: ''
+            hisList: '',
+            spend: ''
         }
     },
     created: function () {
@@ -106,7 +109,8 @@ export default {
     },
     methods: {
         getPri() {
-            var pri = JSON.parse(window.localStorage.getItem(account)).bi;
+            this.$message('服务器正在挖矿，请耐心等待10min');
+            var pri = JSON.parse(window.localStorage.getItem(account)).imfo;
             return pri;
         },
         storeImfo(response, amount) {
@@ -128,14 +132,27 @@ export default {
         transferm() {
             console.log("我要转账");
             var pri = this.getPri();
-            this.axios.post('http://localhost:4396/wallet/buyCoin', {
-                priA: pri,
-                amount: this.transmoney,
-                pubB: new this.Pub(this.G1, this.G2, this.P, this.H),
-                cmv: this.moneyProm,
-                r: this.r
+            this.axios({
+                method: 'post',
+                url: 'http://39.105.58.136:4396/wallet/exchange',
+                data: {
+                    sg1: pri.G1,
+                    sg2: pri.G2,
+                    sp: pri.P,
+                    sh: pri.pub,
+                    sx:pri.pri,
+                    amount: this.transmoney,
+                    g1: this.G1,
+                    g2: this.G2,
+                    p: this.P,
+                    h: this.pub,
+                    cmv: this.moneyProm,
+                    vor: this.r,
+                    spend: this.spend
+                },
+                timeout: '600000'
             }).then((response)=>{
-                this.storeImfo(response, -this.transmoney);
+                this.storeImfo(response, -this.spend);
             }).catch((response)=>{
                     this.$message.error(response);
                     console.log(response);
@@ -144,9 +161,18 @@ export default {
         buym() {
             console.log("我要购币");
             var pri = this.getPri();
-            this.axios.post('http://localhost:4396/wallet/buyCoin', {
-                pri: pri,
-                amount: this.buym
+            this.axios({
+                url: 'http://39.105.58.136:4396/wallet/buycoin',
+                method: 'post',
+                data: {
+                    g1: pri.G1,
+                    g2: pri.G2,
+                    p: pri.P,
+                    h: pri.pub,
+                    x:pri.pri,
+                    amount: this.buym
+                },
+                timeout: '600000'
             }).then((response)=>{
                 this.storeImfo(response, this.buym);
             }).catch((response)=>{
@@ -158,9 +184,18 @@ export default {
         recm() {
             console.log("我要收款");
             var pri = this.getPri();
-            this.axios.post('http://localhost:4396/wallet/buyCoin', {
-                pri: pri,
-                hash: this.hash
+            this.axios({
+                url: 'http://39.105.58.136:4396/wallet/receive',
+                method: 'post',
+                data: {
+                    g1: pri.G1,
+                    g2: pri.G2,
+                    p: pri.P,
+                    h: pri.pub,
+                    x:pri.pri,
+                    hash: this.hash
+                } ,
+                timeout: '600000'
             }).then((response)=>{
                 this.storeImfo(response, response.data.amount);
             }).catch((response)=>{
