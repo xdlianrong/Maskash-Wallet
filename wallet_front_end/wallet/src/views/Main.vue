@@ -28,8 +28,8 @@ export default {
     },
     data() {
         return {
-            addbutton: "加载钱包",
-            newbutton: "新建钱包"
+            addbutton: "加载账户",
+            newbutton: "新建账户"
         }
     },
     created: function () {

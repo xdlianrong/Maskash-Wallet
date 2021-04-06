@@ -3,16 +3,16 @@
     <div>
         <img src="../assets/m.png" class="s">
         <el-card>
-            
+            <strong style="position: absolute; right: 10px;font-size: 1.3rem">{{name}}</strong>            
             <span style="font-size: 0.8rem;">余额</span>
             <span style="font-size: 1.5rem; ">&emsp;{{nowm}}</span>
         </el-card>
         <el-menu mode="horizontal" class="emenu" background-color="rgb(5, 126, 214)" active-text-color="white" text-color="rgb(89, 162, 214)">
             <el-menu-item index="1" @click="con(1)" ref="no">
-                    <i class="el-icon-coin"></i>购币
+                    <i class="el-icon-coin"></i>兑换
                 </el-menu-item>
-            <el-menu-item index="2" @click="con(2)"><i class="el-icon-s-promotion"></i>转账</el-menu-item>
-            <el-menu-item index="3" @click="con(3)"><i class="el-icon-receiving"></i>收款</el-menu-item>
+            <el-menu-item index="2" @click="con(2)"><i class="el-icon-s-promotion"></i>转出</el-menu-item>
+            <el-menu-item index="3" @click="con(3)"><i class="el-icon-receiving"></i>接收</el-menu-item>
             <el-menu-item index="4" @click="con(4)"><i class="el-icon-time"></i>历史</el-menu-item>
             <el-menu-item index="5" @click="con(5)"><i class="el-icon-user"></i>我的</el-menu-item>
         </el-menu>
@@ -23,7 +23,8 @@ export default {
 
     data() {
         return {
-            nowm: 0
+            nowm: 0,
+            name: '',
         }
     },
     methods: {
@@ -34,6 +35,9 @@ export default {
         },
         changenm(vm) {
             this.nowm = vm;
+        },
+        changename(name) {
+            this.name = name;
         }
     },
     mounted: function () {
