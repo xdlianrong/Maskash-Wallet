@@ -173,7 +173,7 @@ export default {
             console.log("我要转账");
             var pri = this.getPri();
             this.$message('正在生成：会计平衡证明、监管相等证明、范围证明、密文格式正确证明');
-            this.axios.post('http://127.0.0.1:4396/wallet/exchange',{
+            this.axios.post('http://192.168.0.104:4396/wallet/exchange',{
                     sg1: pri.G1,
                     sg2: pri.G2,
                     sp: pri.P,
@@ -200,7 +200,7 @@ export default {
             var pri = this.getPri();
             console.log(pri.privatekey);
             this.axios({
-                url: 'http://127.0.0.1:4396/wallet/buycoin',
+                url: 'http://192.168.0.104:4396/wallet/buycoin',
                 method: 'post',
                 data: {
                     g1: pri.G1,
@@ -232,7 +232,7 @@ export default {
             console.log("我要收款");
             var pri = this.getPri();
             this.axios({
-                url: 'http://127.0.0.1:4396/wallet/receive',
+                url: 'http://192.168.0.104:4396/wallet/receive',
                 method: 'post',
                 data: {
                     g1: pri.G1,
@@ -244,8 +244,8 @@ export default {
                 } ,
                 timeout: '600000'
             }).then((response)=>{
-                var amount = parseInt(response.data.amount, 10);
-                this.storeImfo(response, amount);
+                response.data.amount = parseInt(response.data.amount);
+                this.storeImfo(response, parseInt(response.data.amount));
             }).catch((response)=>{
                     this.$message.error(response);
                     console.log(response);
