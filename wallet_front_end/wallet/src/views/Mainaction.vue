@@ -4,26 +4,26 @@
         <el-row type="flex" justify="center" id="o">
             <el-col :xs="20" :sm="15" :md="12" :lg="8" :xl="7" v-show="cmp != 4">  
             <div v-show="cmp == 1">
-                <p>购买金额:</p>
+                <p>购买数额:</p>
                 <el-input maxlength="10" v-model="money" ></el-input>
                 <mybutton :buttonMsg="buy" @click.native="buym"></mybutton>
             </div>
 
             <div v-show="cmp == 2">
-                <p>收款方公钥:</p>
+                <p>接收方公钥:</p>
                 <el-input v-model="G1" placeholder="G1"></el-input>
                 <el-input v-model="G2" placeholder="G2" style="margin-top:10px;"></el-input>
                 <el-input v-model="P" placeholder="P" style="margin-top:10px;"></el-input>
                 <el-input v-model="pub" placeholder="pub" style="margin-top:10px;"></el-input>
                 <div style="margin-top:10px;">
-                    <a>或选择本地钱包&emsp;</a>
+                    <a>或选择本地账户&emsp;</a>
                     <el-select v-model="baccount" placeholder="请选择" clearable>
                         <el-option v-for="it in accountList" :value="it" :key="it.key" :label="it"></el-option>
                     </el-select>
                 </div>
-                <p>转账金额:</p>
+                <p>转出数额:</p>
                 <el-input maxlength="10" v-model="spend" ></el-input>
-                <p>使用承诺的金额</p>
+                <p>使用承诺的数额</p>
                 <el-input maxlength="10" v-model="transmoney" ></el-input>
                 <p>承诺cmv</p>
                 <el-input v-model="moneyProm" ></el-input>
@@ -49,7 +49,7 @@
                 <el-table  :data="hisList" >
                     <el-table-column
                         prop="amount"
-                        label="金额">
+                        label="数额">
                     </el-table-column>
                     <el-table-column
                         prop="hash"
@@ -79,9 +79,9 @@ export default {
     },
     data() {
         return {
-            transfer: '发起转账',
-            buy: '购买',
-            recv: '收款',
+            transfer: '发起转出',
+            buy: '兑换',
+            recv: '接收',
             signout: '登出',
             showImfo: '显示账户信息',
             money: '',
@@ -173,7 +173,7 @@ export default {
             console.log("我要转账");
             var pri = this.getPri();
             this.$message('正在生成：会计平衡证明、监管相等证明、范围证明、密文格式正确证明');
-            this.axios.post('http://192.168.199.215:4396/wallet/exchange',{
+            this.axios.post('http://127.0.0.1:4396/wallet/exchange',{
                     sg1: pri.G1,
                     sg2: pri.G2,
                     sp: pri.P,
@@ -200,7 +200,7 @@ export default {
             var pri = this.getPri();
             console.log(pri.privatekey);
             this.axios({
-                url: 'http://192.168.199.215:4396/wallet/buycoin',
+                url: 'http://127.0.0.1:4396/wallet/buycoin',
                 method: 'post',
                 data: {
                     g1: pri.G1,
@@ -232,7 +232,7 @@ export default {
             console.log("我要收款");
             var pri = this.getPri();
             this.axios({
-                url: 'http://192.168.199.215:4396/wallet/receive',
+                url: 'http://127.0.0.1:4396/wallet/receive',
                 method: 'post',
                 data: {
                     g1: pri.G1,

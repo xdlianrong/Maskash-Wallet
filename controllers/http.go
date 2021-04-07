@@ -15,7 +15,7 @@ var (
 	Verifyurl    = "http://39.106.173.191:1423/verify"
 	Getpuburl    = "http://39.106.173.191:1423/regkey?chainID=1"
 	Ethurl       = "http://127.0.0.1:8545"
-	RegulatorURL = "http://127.0.0.1:1423/" // 监管方URL
+	RegulatorURL = "http://39.106.173.191:1423/" // 监管方URL
 	ExchangeURL  = "http://127.0.0.1:1323/"
 )
 
