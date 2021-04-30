@@ -82,3 +82,19 @@ func TestComm(t *testing.T){
 		fmt.Println("test verify comm no")
 	}
 }
+
+func TestEncDec(t *testing.T) {
+	fmt.Printf("\n\n========================= EXAMPLE 1 =========================\n\n")
+	pub, priv, err := GenerateKeys("五点共圆")
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+	fmt.Printf("公钥：\nP:%x\nG1:%x\nG2:%x\nH:%x\n私钥：\nX:%x\n", pub.P, pub.G1, pub.G2, pub.H, priv.X)
+	enc, _, _ := EncryptValue(pub, uint64(20))
+	if(DecryptValue(priv, enc) == uint64(20)) {
+		fmt.Println("test decrypt text ok")
+	}else{
+		fmt.Println("test decrypt text no")
+	}
+}

@@ -6,6 +6,7 @@ import (
 	"crypto/rand"
 	"crypto/sha256"
 	"encoding/binary"
+	"fmt"
 	"math/big"
 )
 
@@ -109,6 +110,21 @@ func (pub PubKey) EncryptCM(plainText []byte) (ECPoint, Enc, *big.Int){
 	com := pub.G1.Mult(v).Add(pub.H.Mult(r))
 
 	return  com, Enc{t1,t2}, r
+}
+
+func (priv PrivKey) DecryptCM(cyperText Enc) uint64 {
+	gv := cyperText.P1.Add(cyperText.P2.Mult(priv.X).Neg())
+	for i := 1; true; i++ {
+		m := new(big.Int).SetInt64(int64(i))
+		if(gv.Equal(priv.G1.Mult(m))){
+			return uint64(i)
+		}
+		if i >= 262144 {
+			fmt.Printf("该承诺并非价值承诺或承诺价值大于262144")
+			return 0
+		}
+	}
+	return 0
 }
 
 func (priv PrivKey) Sign(msg []byte)([]byte, []byte, error, []byte){

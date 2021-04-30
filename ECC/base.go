@@ -3,8 +3,17 @@ package bp
 import (
 	"crypto/elliptic"
 	"encoding/binary"
+	"fmt"
 	"math/big"
 )
+
+type PrivStr struct {
+	G1         string `json:"G1"`
+	G2         string `json:"G2"`
+	P          string `json:"P"`
+	Publickey  string `json:"publickey"`
+	Privatekey string `json:"privatekey"`
+}
 
 type PublicKey struct {
 	G1, G2, P, H *big.Int
@@ -21,6 +30,37 @@ type Commitment struct {
 }
 type Signature struct {
 	M, M_hash, R, S []byte
+}
+
+type Account struct {
+	Pub  PublicKey  `json:"Pub"`
+	Priv PrivateKey `json:"Priv"`
+	Info struct {
+		Name    string `json:"Name"`
+		ID      string `json:"ID"`
+		Hashky  string `json:"Hashky"`
+		ExtInfo string `json:"ExtInfo"`
+	} `json:"Info"`
+}
+
+func GenerateAccount(randString string, name string, id string, extInfo string) Account {
+	pub, priv, _ := GenerateKeys(randString)
+	fmt.Println("生成账户"+name, "私钥：", priv.X.String())
+	return Account{
+		Pub:  pub,
+		Priv: priv,
+		Info: struct {
+			Name    string `json:"Name"`
+			ID      string `json:"ID"`
+			Hashky  string `json:"Hashky"`
+			ExtInfo string `json:"ExtInfo"`
+		}{
+			Name:    name,
+			ID:      id,
+			Hashky:  pub.H.Text(16),
+			ExtInfo: extInfo,
+		},
+	}
 }
 
 func Encrypt(pub PublicKey, M []byte) (C CypherText) {
@@ -112,6 +152,15 @@ func EncryptValue(pub PublicKey, M uint64) (C CypherText, commit Commitment, err
 	return CypherText{c1,c2},Commitment{com1, r.Bytes()},nil
 }
 
+func DecryptValue(priv PrivateKey, C CypherText) (v uint64) {
+	privkey := ConvertPriv(priv)
+	x1, y1 := elliptic.Unmarshal(EC.C, C.C1)
+	x2, y2 := elliptic.Unmarshal(EC.C, C.C2)
+	enc := Enc{ECPoint{x1,y1},ECPoint{x2,y2}}
+	return privkey.DecryptCM(enc)
+}
+
+
 func EncryptAddress(pub PublicKey, addr []byte) (C CypherText, commit Commitment, err error){
 	addr_uint64 := binary.BigEndian.Uint64(addr)
 	return EncryptValue(pub, addr_uint64)
@@ -124,6 +173,16 @@ func ConvertPub(pub PublicKey) PubKey {
 	re.H.X, re.H.Y = elliptic.Unmarshal(EC.C, pub.H.Bytes())
 	return re
 }
+
+func ConvertPriv(priv PrivateKey) PrivKey {
+	re := PrivKey{}
+	re.G1.X, re.G1.Y = elliptic.Unmarshal(EC.C, priv.G1.Bytes())
+	re.G2.X, re.G2.Y = elliptic.Unmarshal(EC.C, priv.G2.Bytes())
+	re.H.X, re.H.Y = elliptic.Unmarshal(EC.C, priv.H.Bytes())
+	re.X = priv.X
+	return re
+}
+
 func RecoverPub(pub PubKey) PublicKey {
 	re := PublicKey{}
 	re.G1 = new(big.Int).SetBytes(elliptic.Marshal(EC.C, pub.G1.X, pub.G1.Y))
@@ -131,4 +190,13 @@ func RecoverPub(pub PubKey) PublicKey {
 	re.P = EC.N
 	re.H = new(big.Int).SetBytes(elliptic.Marshal(EC.C, pub.H.X, pub.H.Y))
 	return re
+}
+
+func (account Account) KeyToString() (privStr PrivStr) {
+	privStr.G1 = fmt.Sprintf("%0*x", 64, account.Pub.G1)
+	privStr.G2 = fmt.Sprintf("%0*x", 64, account.Pub.G2)
+	privStr.P = fmt.Sprintf("%0*x", 64, account.Pub.P)
+	privStr.Publickey = fmt.Sprintf("%0*x", 64, account.Pub.H)
+	privStr.Privatekey = fmt.Sprintf("%0*x", 64, account.Priv.X)
+	return
 }

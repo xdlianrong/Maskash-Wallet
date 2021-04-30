@@ -13,7 +13,7 @@ import (
 	"runtime"
 	"strconv"
 	"time"
-	"wallet/ELGamal"
+	ecc "wallet/ECC"
 	"wallet/model"
 )
 
@@ -23,7 +23,7 @@ func stringtobig(s string, base int) (b *big.Int) {
 	return
 }
 
-func CreatePriKey(g1 string, g2 string, p string, h string, x string) (usrpub ELGamal.PrivateKey) {
+func CreatePriKey(g1 string, g2 string, p string, h string, x string) (usrpub ecc.PrivateKey) {
 	usrpub.G1 = stringtobig(g1, 16)
 	usrpub.G2 = stringtobig(g2, 16)
 	usrpub.P = stringtobig(p, 16)
@@ -32,14 +32,14 @@ func CreatePriKey(g1 string, g2 string, p string, h string, x string) (usrpub EL
 	return
 }
 
-func CreatePubKey(g1 string, g2 string, p string, h string) (usrpub ELGamal.PublicKey) {
+func CreatePubKey(g1 string, g2 string, p string, h string) (usrpub ecc.PublicKey) {
 	usrpub.G1 = stringtobig(g1, 16)
 	usrpub.G2 = stringtobig(g2, 16)
 	usrpub.P = stringtobig(p, 16)
 	usrpub.H = stringtobig(h, 16)
 	return
 }
-func EthSendTransaction(senderRPCPort int, senderGethAccount string, receiverGethAccount string, senderAccount ELGamal.PrivateKey, receiverAccount ELGamal.PublicKey, coin Coin, total int, amount int) string {
+func EthSendTransaction(senderRPCPort int, senderGethAccount string, receiverGethAccount string, senderAccount ecc.PrivateKey, receiverAccount ecc.PublicKey, coin Coin, total int, amount int) string {
 	if !personalUnlockAccount(senderRPCPort, senderGethAccount, "123456") {
 		Fatalf("发送方账户解锁失败")
 	}
@@ -55,7 +55,7 @@ func EthSendTransaction(senderRPCPort int, senderGethAccount string, receiverGet
 	}
 	return result.Result
 }
-func PerpareTX(senderGethAccount string, receiverGethAccount string, senderAccount ELGamal.PrivateKey, receiverAccount ELGamal.PublicKey, coin Coin, total int, amount int) SendRPCTx {
+func PerpareTX(senderGethAccount string, receiverGethAccount string, senderAccount ecc.PrivateKey, receiverAccount ecc.PublicKey, coin Coin, total int, amount int) SendRPCTx {
 	param := SendRPCTxParams{
 		From:     senderGethAccount,
 		To:       receiverGethAccount,
