@@ -120,8 +120,8 @@ func ExchangeCoin(c echo.Context) error {
 	rpcTx := utils.EthGetTransactionByHash(8545, txHash)
 	tx := rpcTx.Result
 	returnCoin := utils.Coin{
-		Cmv:    tx.Cmr,
-		Vor:    decrypt(tx.Cmrrc1, tx.Cmrrc2, senderPriv),
+		Cmv:    tx.CmR,
+		Vor:    decrypt(tx.CmRRC1, tx.CmRRC2, senderPriv),
 		Hash:   txHash,
 		Amount: strconv.Itoa(amount - spend),
 	}
@@ -136,10 +136,10 @@ func Receive(c echo.Context) error {
 	rpcTx := utils.EthGetTransactionByHash(8545, w.Hash)
 	tx := rpcTx.Result
 	returnCoin := utils.Coin{
-		Cmv:    tx.Cmr,
-		Vor:    decrypt(tx.Cmsrc1, tx.Cmsrc2, privKey),
+		Cmv:    tx.CmO,
+		Vor:    decrypt(tx.CmSRC1, tx.CmSRC2, privKey),
 		Hash:   w.Hash,
-		Amount: decryptValue(tx.Evsbsc1, tx.Evsbsc2, privKey),
+		Amount: decryptValue(tx.EvsBsC1, tx.EvsBsC2, privKey),
 	}
 	return c.JSON(http.StatusOK, returnCoin)
 }

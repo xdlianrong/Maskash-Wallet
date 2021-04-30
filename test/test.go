@@ -25,7 +25,7 @@ var(
 )
 
 func main(){
-	//TestUnlock()
+	TestUnlock()
 	//TestSendTransaction()
 	TestGetTransaction()
 }
