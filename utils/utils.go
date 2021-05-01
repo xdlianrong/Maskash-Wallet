@@ -40,7 +40,7 @@ func CreatePubKey(g1 string, g2 string, p string, h string) (usrpub ecc.PublicKe
 	return
 }
 func EthSendTransaction(senderRPCPort int, senderGethAccount string, receiverGethAccount string, senderAccount ecc.PrivateKey, receiverAccount ecc.PublicKey, coin Coin, total int, amount int) string {
-	if !personalUnlockAccount(senderRPCPort, senderGethAccount, "123456") {
+	if !personalUnlockAccount(senderRPCPort, senderGethAccount, "1") {
 		Fatalf("发送方账户解锁失败")
 	}
 	txs := PerpareTX(senderGethAccount, receiverGethAccount, senderAccount, receiverAccount, coin, total, amount)

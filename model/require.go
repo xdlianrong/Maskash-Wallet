@@ -12,8 +12,8 @@ import (
 var (
 	Ethurl = "http://127.0.0.1:8545"
 
-	EthFrom = "0xd7ff4f9fd04811ad63509979676c772db815827c"
-	EthTo   = "0xc8703ca0ba2db1e9dda37a7d020addf776c5e21a"
+	EthFrom = "0x41c060c18d1ba76971dc2d298d6e7cc64f7be57f"
+	EthTo   = "0x41c060c18d1ba76971dc2d298d6e7cc64f7be57f"
 )
 
 // unlock publisher eth_account struct
