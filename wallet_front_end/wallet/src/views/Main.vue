@@ -2,18 +2,18 @@
   <div id="o">
     <el-row>
             <!-- 图片也可以换成 element 自带的 -->
-            <el-row type="flex" justify="center"><el-col :xs="7" :sm="5" :md="3" :lg="2" :xl="2"><img src="../assets/wallet-outline.svg"></el-col></el-row> 
+            <el-row type="flex" justify="center"><img src="../assets/w.png" style="width: 10rem"></el-row> 
             <el-row type="flex" justify="center" style="margin-top: 0.5rem;">
-                <el-col :xs="10" :sm="8" :md="5" :lg="4" :xl="4">
+                <el-col :xs="10" :sm="8" :md="7.5" :lg="7.5" :xl="7.5">
                     <router-link to="/Newwallet" style="text-decoration: none;">
                         <mybutton :buttonMsg="newbutton"></mybutton>
                     </router-link>
                 </el-col>
             </el-row>
             <el-row type="flex" justify="center">
-                <el-col :xs="10" :sm="8" :md="5" :lg="4" :xl="4">
+                <el-col :xs="10" :sm="8" :md="7.5" :lg="7.5" :xl="7.5">
                     <router-link to="/Loadwallet" style="text-decoration: none;">
-                        <mybutton :buttonMsg="addbutton" style="margin-top: -10px"></mybutton>
+                        <mybutton :buttonMsg="addbutton" class="b1"></mybutton>
                     </router-link>
                 </el-col>
             </el-row>

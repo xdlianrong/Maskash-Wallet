@@ -1,24 +1,19 @@
 <template>
-    <div class="border">
+
         <div class="button">{{ buttonMsg }}</div>
-    </div>
 </template>
 <style>
     .button {
-        font-size: 1.1rem;
         text-align: center;
-        background: #59aafa;
-        border-radius: 4px;
+        background: #007FD8;
+        font-size: 22px;
+        border-radius: 6px;
+        border: #007FD8 1px solid;
         color: white;
-        line-height: 3.3rem;
-        box-shadow: 0 2px 4px rgba(0, 0, 0, .12), 0 0 6px rgba(0, 0, 0, .04);
+        line-height: 66px;
+        margin-top: 2.8rem;
     }
 
-    .border {
-        border-radius: 4px;
-        border: #f2f2f2 9px solid;
-        margin-top: 2.5rem;
-    }
 </style>
 <script>
 export default {

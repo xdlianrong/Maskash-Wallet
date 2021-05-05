@@ -1,14 +1,14 @@
 <template>
-    <div id="o">
+    <div id="o" class="main">
         <!-- 输入信息，需要用 el-col 实现响应式布局 -->
-        <el-row type="flex" justify="center">
-            <el-col :xs="20" :sm="15" :md="12" :lg="8" :xl="7"  @click="register">
-                <span class="imfo">
-                    <h4 style="margin-top: 0;">我们将通过您的个人信息为您生成账户公钥并在本地储存相关信息</h4>
-                    <p >为保证您的账户安全，并让您在多个设备上打开您的账户，请及时备份并安全保管相关文件</p>
+        <div class="imfo">
+            <p style="margin-top: 0;">我们将通过您的个人信息为您生成账户公钥并在本地储存相关信息</p>
+            <p style="font-size: 17px; color: #666666;">为保证您的账户安全，并让您在多个设备上打开您的账户，请及时备份并安全保管相关文件</p>
 <!--                    <p>文件储存地址为.....</p>-->
 <!--                    <p>文件名为.....</p>-->
-                </span>
+        </div>
+        <el-row type="flex" justify="center">
+            <el-col :xs="20" :sm="15" :md="8" :lg="8" :xl="8"  @click="register">                
                 <p>姓名：</p>
                 <el-input maxlength="12" v-model="name" minlength="1"></el-input>
                 <p>身份证号：</p>
@@ -40,6 +40,12 @@ export default {
             string: ''
         }
     },
+    mounted: function() {
+        if(document.body.clientHeight < 870) {
+            document.getElementById("o").style.top = "10px";
+            document.getElementById("o").style.transform = "none";
+        }
+    },
     methods: {
         Account(imfo) {
             this.imfo = imfo;
@@ -49,7 +55,7 @@ export default {
             if (this.id == '' || this.name == '' || this.string == '') {
                 this.$message.error ('提交的信息不能为空');
             } else {
-                this.axios.post('http://192.168.0.104:4396/wallet/register', {
+                this.axios.post('http://39.105.58.136:4396/wallet/register', {
                     name: this.name,
                     id: this.id,
                     str: this.string
@@ -90,10 +96,17 @@ export default {
         transform: translateY(-50%);
     }   
     .imfo {
-        text-align: center;    
+        text-align: center; 
+        margin-bottom: 69px;
     }
     .imfo p {
-        margin: 0.2rem;
-        font-size: 0.8rem;
+        margin-top: 19px;   
+    }
+    .b1 {
+        background: white;
+        color: #007FD8;
+    }
+    p {
+        font-size: 20px;
     }
 </style>
