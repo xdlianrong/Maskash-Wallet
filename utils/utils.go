@@ -13,7 +13,7 @@ import (
 	"runtime"
 	"strconv"
 	"time"
-	"wallet/ELGamal"
+	ecc "wallet/ECC"
 	"wallet/model"
 )
 
@@ -23,7 +23,7 @@ func stringtobig(s string, base int) (b *big.Int) {
 	return
 }
 
-func CreatePriKey(g1 string, g2 string, p string, h string, x string) (usrpub ELGamal.PrivateKey) {
+func CreatePriKey(g1 string, g2 string, p string, h string, x string) (usrpub ecc.PrivateKey) {
 	usrpub.G1 = stringtobig(g1, 16)
 	usrpub.G2 = stringtobig(g2, 16)
 	usrpub.P = stringtobig(p, 16)
@@ -32,15 +32,15 @@ func CreatePriKey(g1 string, g2 string, p string, h string, x string) (usrpub EL
 	return
 }
 
-func CreatePubKey(g1 string, g2 string, p string, h string) (usrpub ELGamal.PublicKey) {
+func CreatePubKey(g1 string, g2 string, p string, h string) (usrpub ecc.PublicKey) {
 	usrpub.G1 = stringtobig(g1, 16)
 	usrpub.G2 = stringtobig(g2, 16)
 	usrpub.P = stringtobig(p, 16)
 	usrpub.H = stringtobig(h, 16)
 	return
 }
-func EthSendTransaction(senderRPCPort int, senderGethAccount string, receiverGethAccount string, senderAccount ELGamal.PrivateKey, receiverAccount ELGamal.PublicKey, coin Coin, total int, amount int) string {
-	if !personalUnlockAccount(senderRPCPort, senderGethAccount, "123456") {
+func EthSendTransaction(senderRPCPort int, senderGethAccount string, receiverGethAccount string, senderAccount ecc.PrivateKey, receiverAccount ecc.PublicKey, coin Coin, total int, amount int) string {
+	if !personalUnlockAccount(senderRPCPort, senderGethAccount, "1") {
 		Fatalf("发送方账户解锁失败")
 	}
 	txs := PerpareTX(senderGethAccount, receiverGethAccount, senderAccount, receiverAccount, coin, total, amount)
@@ -55,7 +55,7 @@ func EthSendTransaction(senderRPCPort int, senderGethAccount string, receiverGet
 	}
 	return result.Result
 }
-func PerpareTX(senderGethAccount string, receiverGethAccount string, senderAccount ELGamal.PrivateKey, receiverAccount ELGamal.PublicKey, coin Coin, total int, amount int) SendRPCTx {
+func PerpareTX(senderGethAccount string, receiverGethAccount string, senderAccount ecc.PrivateKey, receiverAccount ecc.PublicKey, coin Coin, total int, amount int) SendRPCTx {
 	param := SendRPCTxParams{
 		From:     senderGethAccount,
 		To:       receiverGethAccount,
@@ -64,8 +64,8 @@ func PerpareTX(senderGethAccount string, receiverGethAccount string, senderAccou
 		Value:    "0x1",
 		ID:       "0x0",
 		Data:     "0x00",
-		Spk:      fmt.Sprintf("%0*x%0*x%0*x%0*x", 64, senderAccount.P, 64, senderAccount.G1, 64, senderAccount.G2, 64, senderAccount.H),
-		Rpk:      fmt.Sprintf("%0*x%0*x%0*x%0*x", 64, receiverAccount.P, 64, receiverAccount.G1, 64, receiverAccount.G2, 64, receiverAccount.H),
+		Spk:      fmt.Sprintf("%0*x%0*x%0*x%0*x", 64, senderAccount.P, 129, senderAccount.G1, 129, senderAccount.G2, 129, senderAccount.H),
+		Rpk:      fmt.Sprintf("%0*x%0*x%0*x%0*x", 64, receiverAccount.P, 129, receiverAccount.G1, 129, receiverAccount.G2, 129, receiverAccount.H),
 		S:        fmt.Sprintf("0x%x", amount),
 		R:        fmt.Sprintf("0x%x", total-amount),
 		Vor:      coin.Vor,

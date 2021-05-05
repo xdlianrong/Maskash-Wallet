@@ -7,7 +7,7 @@ import (
 	"github.com/labstack/echo"
 	"net/http"
 	"strconv"
-	"wallet/ELGamal"
+	ecc "wallet/ECC"
 	"wallet/model"
 	"wallet/utils"
 )
@@ -29,7 +29,7 @@ func Register(c echo.Context) error {
 		return c.JSON(http.StatusBadRequest, ErrorValue)
 	}
 	// 计算公私钥
-	account := ELGamal.GenerateAccount(w.Str, w.Name, w.Id, w.Str)
+	account := ecc.GenerateAccount(w.Str, w.Name, w.Id, w.Str)
 	if res := register(account); res == "Successful!" {
 		return c.JSON(http.StatusOK, account.KeyToString())
 	} else {
@@ -63,7 +63,7 @@ func Register(c echo.Context) error {
 	//}
 }
 
-func register(account ELGamal.Account) string {
+func register(account ecc.Account) string {
 	data := account.Info
 	body := ethRPCPost(data, RegulatorURL+"register")
 	res := string(body)
@@ -84,7 +84,7 @@ func Buycoin(c echo.Context) error {
 		return c.JSON(http.StatusInternalServerError, err)
 	}
 	// 向交易所发出购币请求
-	body := ethRPCPost(w, ExchangeURL+"buy")
+	body := ethRPCPost(w, ExchangeURL + "buy")
 	var receipt utils.Receipt
 	json.Unmarshal(body, &receipt)
 
@@ -120,8 +120,8 @@ func ExchangeCoin(c echo.Context) error {
 	rpcTx := utils.EthGetTransactionByHash(8545, txHash)
 	tx := rpcTx.Result
 	returnCoin := utils.Coin{
-		Cmv:    tx.Cmr,
-		Vor:    decrypt(tx.Cmrrc1, tx.Cmrrc2, senderPriv),
+		Cmv:    tx.CmR,
+		Vor:    decrypt(tx.CmRRC1, tx.CmRRC2, senderPriv),
 		Hash:   txHash,
 		Amount: strconv.Itoa(amount - spend),
 	}
@@ -136,14 +136,14 @@ func Receive(c echo.Context) error {
 	rpcTx := utils.EthGetTransactionByHash(8545, w.Hash)
 	tx := rpcTx.Result
 	returnCoin := utils.Coin{
-		Cmv:    tx.Cmr,
-		Vor:    decrypt(tx.Cmsrc1, tx.Cmsrc2, privKey),
+		Cmv:    tx.CmO,
+		Vor:    decrypt(tx.CmSRC1, tx.CmSRC2, privKey),
 		Hash:   w.Hash,
-		Amount: decryptValue(tx.Evsbsc1, tx.Evsbsc2, privKey),
+		Amount: decryptValue(tx.EvsBsC1, tx.EvsBsC2, privKey),
 	}
 	return c.JSON(http.StatusOK, returnCoin)
 }
-func decryptCoinReceipt(recript utils.Receipt, priv ELGamal.PrivateKey, amount string) utils.Coin {
+func decryptCoinReceipt(recript utils.Receipt, priv ecc.PrivateKey, amount string) utils.Coin {
 	return utils.Coin{
 		Cmv:    recript.Cmv,
 		Vor:    decrypt(recript.Epkrc1, recript.Epkrc2, priv),
@@ -153,25 +153,25 @@ func decryptCoinReceipt(recript utils.Receipt, priv ELGamal.PrivateKey, amount s
 }
 
 //	解密随机数密文
-func decrypt(hex0xStringC1 string, hex0xStringC2 string, priv ELGamal.PrivateKey) string {
+func decrypt(hex0xStringC1 string, hex0xStringC2 string, priv ecc.PrivateKey) string {
 	hexData1, _ := hex.DecodeString(hex0xStringC1[2:])
 	hexData2, _ := hex.DecodeString(hex0xStringC2[2:])
-	C := ELGamal.CypherText{
+	C := ecc.CypherText{
 		C1: hexData1,
 		C2: hexData2,
 	}
-	M := fmt.Sprintf("0x%x", ELGamal.Decrypt(priv, C))
+	M := fmt.Sprintf("0x%x", ecc.Decrypt(priv, C))
 	return M
 }
 
 //	解密随机数密文
-func decryptValue(hex0xStringC1 string, hex0xStringC2 string, priv ELGamal.PrivateKey) string {
+func decryptValue(hex0xStringC1 string, hex0xStringC2 string, priv ecc.PrivateKey) string {
 	hexData1, _ := hex.DecodeString(hex0xStringC1[2:])
 	hexData2, _ := hex.DecodeString(hex0xStringC2[2:])
-	C := ELGamal.CypherText{
+	C := ecc.CypherText{
 		C1: hexData1,
 		C2: hexData2,
 	}
-	M := fmt.Sprintf("0x%x", ELGamal.DecryptValue(priv, C))
+	M := fmt.Sprintf("0x%x", ecc.DecryptValue(priv, C))
 	return M
 }
