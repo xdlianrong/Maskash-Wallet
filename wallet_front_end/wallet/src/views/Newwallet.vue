@@ -108,10 +108,7 @@ export default {
         background: white;
         color: #007FD8;
     }
-    .el-col p {
-        font-size: 20px;
-        margin-top: 35px;
-    }
+    
     .t {
         width: 5px;
         height: 36px;
@@ -128,5 +125,11 @@ export default {
     }
     .el-input__inner {
         height: 55px !important;
+    }
+</style>
+<style scoped>
+    .el-col p {
+        font-size: 20px;
+        margin-top: 35px;
     }
 </style>

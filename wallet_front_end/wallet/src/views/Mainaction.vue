@@ -1,8 +1,8 @@
 <template>
     <div style="height: 100%;">
         <navmenu @changecmp="changecmps"  ref="n"></navmenu>  
-        <el-row type="flex" justify="center" id="o">
-            <el-col :xs="20" :sm="15" :md="12" :lg="8" :xl="7" v-show="cmp != 4">  
+        <el-row type="flex" justify="center" id="om">
+            <el-col :xs="20" :sm="15" :md="8" :lg="8" :xl="8" v-show="cmp != 4">  
             <div v-show="cmp == 1">
                 <p>购买数额:</p>
                 <el-input maxlength="10" v-model="money" ></el-input>
@@ -10,7 +10,7 @@
             </div>
 
             <div v-show="cmp == 2">
-                <p>接收方公钥:</p>
+                <p><span class = "t"></span>接收方公钥:</p>
                 <el-input v-model="G1" placeholder="G1"></el-input>
                 <el-input v-model="G2" placeholder="G2" style="margin-top:10px;"></el-input>
                 <el-input v-model="P" placeholder="P" style="margin-top:10px;"></el-input>
@@ -21,16 +21,16 @@
                         <el-option v-for="it in accountList" :value="it" :key="it.key" :label="it"></el-option>
                     </el-select>
                 </div>
-                <p>转出数额:</p>
+                <p><span class = "t"></span>转出数额:</p>
                 <el-input maxlength="10" v-model="spend" ></el-input>
-                <p>使用承诺的数额</p>
+                <p><span class = "t"></span>使用承诺的数额</p>
                 <el-input maxlength="10" v-model="transmoney" ></el-input>
-                <p>承诺cmv</p>
+                <p><span class = "t"></span>承诺cmv</p>
                 <el-input v-model="moneyProm" ></el-input>
-                <p>随机数vor</p>
+                <p><span class = "t"></span>随机数vor</p>
                 <el-input v-model="r" ></el-input>
                 <!-- 上面这些够了，可以返回东西了 -->
-                <mybutton :buttonMsg="transfer" @click.native="transferm"></mybutton>
+                <mybutton :buttonMsg="transfer" @click.native="transferm" style="margin-bottom: 20px"></mybutton>
             </div>
 
             <div v-show="cmp == 3">
@@ -40,12 +40,14 @@
             </div>
             
             <div v-show="cmp == 5">
-                <mybutton :buttonMsg="showImfo" @click.native="showImfof"></mybutton>
+                <mybutton :buttonMsg="showImfo" @click.native="showImfof" class="b1"></mybutton>
                 <mybutton :buttonMsg="signout" @click.native="signoutf"></mybutton>
             </div>
             </el-col>
+            
         </el-row>
-        <div v-show="cmp == 4" id="histb">
+        <el-row v-show="cmp == 4" type="flex" justify="center">
+            <el-col :xs="24" :sm="20" :md="17" :lg="15" :xl="15" >
                 <el-table  :data="hisList" >
                     <el-table-column
                         prop="amount"
@@ -64,7 +66,8 @@
                         label="随机数vor">
                     </el-table-column>
                 </el-table>
-        </div>
+            </el-col>    
+        </el-row>
     </div>
 </template>
 <script>
@@ -255,11 +258,11 @@ export default {
             this.cmp = index;
             // 防止小手机转账界面崩坏
             if (this.cmp == 2) {
-                document.getElementById("o").style.top = "10px";
-                document.getElementById("o").style.transform = "none";
+                document.getElementById("om").style.top = "10px";
+                document.getElementById("om").style.transform = "none";
             } else {
-                document.getElementById("o").style.top = "45%";
-                document.getElementById("o").style.transform = "translateY(-50%)";
+                document.getElementById("om").style.top = "30%";
+                document.getElementById("om").style.transform = "translateY(-50%)";
             }
             // 加载历史
             if (this.cmp == 4) {
@@ -321,14 +324,23 @@ export default {
 }
 </script>
 <style>
-#histb {
-    width: 98%;
-    margin-left: 1%;
-}
 .message_box_alert {
     word-break: break-all !important;
 }
 .el-message-box{
     width: 80%;
+}
+#om {
+    position: relative;
+    top: 35%;
+    transform: translateY(-50%);
+}  
+.el-table td, .el-table th {
+    text-align: center !important;
+}
+</style>
+<style scoped>
+.el-col p {
+    margin-top: 25px !important;
 }
 </style>
