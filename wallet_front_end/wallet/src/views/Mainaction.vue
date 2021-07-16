@@ -68,6 +68,10 @@
                 </el-table>
             </el-col>    
         </el-row>
+
+        <div id="progress">
+            <el-button v-loading="loading">生成会计平衡证明</el-button>
+        </div>
     </div>
 </template>
 <script>
@@ -106,18 +110,18 @@ export default {
     },
     created: function () {
         account = this.$route.query.account;
-        if (account == undefined) {
-            this.$message.error({
-                message: '请登录账户',
-                duration: 1400
-            }); 
-            setTimeout(() => {
-                this.$router.push({
-                    path: '/',
-                    name: 'Main',
-                })
-            }, 1500);   
-        }
+        // if (account == undefined) {
+        //     this.$message.error({
+        //         message: '请登录账户',
+        //         duration: 1400
+        //     }); 
+        //     setTimeout(() => {
+        //         this.$router.push({
+        //             path: '/',
+        //             name: 'Main',
+        //         })
+        //     }, 1500);   
+        // }
         this.hisList = JSON.parse(window.localStorage.getItem(account)).history;
     },
     mounted: function () {
@@ -337,6 +341,10 @@ export default {
 }  
 .el-table td, .el-table th {
     text-align: center !important;
+}
+#progress {
+    position: absolute;
+    right: 60px;
 }
 </style>
 <style scoped>
