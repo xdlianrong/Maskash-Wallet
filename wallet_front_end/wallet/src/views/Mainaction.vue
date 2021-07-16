@@ -2,14 +2,14 @@
   <div style="height: 100%;">
     <navmenu @changecmp="changecmps" ref="n"></navmenu>
     <el-row type="flex" justify="center" id="om">
-      <el-col :xs="20" :sm="15" :md="8" :lg="8" :xl="8" v-show="cmp != 4">
-        <div v-show="cmp == 1">
+      <el-col :xs="20" :sm="15" :md="8" :lg="8" :xl="8" v-show="cmp !== 4">
+        <div v-show="cmp === 1">
           <p>购买数额:</p>
-          <el-input maxlength="10" v-model="money"></el-input>
+          <el-input maxlength="10" v-model="money" oninput="value=value.replace(/[^\d]/g,'')"></el-input>
           <mybutton :buttonMsg="buy" @click.native="buym"></mybutton>
         </div>
 
-        <div v-show="cmp == 2">
+        <div v-show="cmp === 2">
           <p><span class="t"></span>接收方公钥:</p>
           <el-input v-model="G1" placeholder="G1"></el-input>
           <el-input v-model="G2" placeholder="G2" style="margin-top:10px;"></el-input>
@@ -22,9 +22,9 @@
             </el-select>
           </div>
           <p><span class="t"></span>转出数额:</p>
-          <el-input maxlength="10" v-model="spend"></el-input>
+          <el-input maxlength="10" v-model="spend" oninput="value=value.replace(/[^\d]/g,'')"></el-input>
           <p><span class="t"></span>使用承诺的数额</p>
-          <el-input maxlength="10" v-model="transmoney"></el-input>
+          <el-input maxlength="10" v-model="transmoney" oninput="value=value.replace(/[^\d]/g,'')"></el-input>
           <p><span class="t"></span>承诺cmv</p>
           <el-input v-model="moneyProm"></el-input>
           <p><span class="t"></span>随机数vor</p>
@@ -33,20 +33,20 @@
           <mybutton :buttonMsg="transfer" @click.native="transferm" style="margin-bottom: 20px"></mybutton>
         </div>
 
-        <div v-show="cmp == 3">
+        <div v-show="cmp === 3">
           <p>交易hash</p>
           <el-input v-model="hash"></el-input>
           <mybutton :buttonMsg="recv" @click.native="recm"></mybutton>
         </div>
 
-        <div v-show="cmp == 5">
+        <div v-show="cmp === 5">
           <mybutton :buttonMsg="showImfo" @click.native="showImfof" class="b1"></mybutton>
           <mybutton :buttonMsg="signout" @click.native="signoutf"></mybutton>
         </div>
       </el-col>
 
     </el-row>
-    <el-row v-show="cmp == 4" type="flex" justify="center">
+    <el-row v-show="cmp === 4" type="flex" justify="center">
       <el-col :xs="24" :sm="20" :md="17" :lg="15" :xl="15">
         <el-table :data="hisList">
           <el-table-column
@@ -74,8 +74,8 @@
 import navmenu from '../components/Navmenu'
 import mybutton from '../components/Mybutton'
 
-var account;
-var accountList = new Array();
+let account;
+const accountList = [];
 export default {
   components: {
     navmenu,
@@ -107,7 +107,7 @@ export default {
   },
   created: function () {
     account = this.$route.query.account;
-    if (account == undefined) {
+    if (account === undefined) {
       this.$message.error({
         message: '请登录账户',
         duration: 1400
@@ -124,9 +124,9 @@ export default {
   mounted: function () {
     this.showCoin();
     // 获取本地账户列表
-    for (var i = 0; i < window.localStorage.length; i++) {
-      var name = window.localStorage.key(i);
-      if (name != 'loglevel:webpack-dev-server' && name != account) {
+    for (let i = 0; i < window.localStorage.length; i++) {
+      const name = window.localStorage.key(i);
+      if (name !== 'loglevel:webpack-dev-server' && name !== account) {
         accountList.push(name);
       }
     }
@@ -134,13 +134,13 @@ export default {
   },
   watch: {
     baccount(val) {
-      if (val == '') {
+      if (val === '') {
         this.G1 = '';
         this.G2 = '';
         this.P = '';
         this.pub = '';
       } else {
-        var b = JSON.parse(window.localStorage.getItem(val)).imfo;
+        const b = JSON.parse(window.localStorage.getItem(val)).imfo;
         console.log(b);
         this.G1 = b.G1;
         this.G2 = b.G2;
@@ -151,15 +151,14 @@ export default {
   },
   methods: {
     getPri() {
-      var pri = JSON.parse(window.localStorage.getItem(account)).imfo;
-      return pri;
+      return JSON.parse(window.localStorage.getItem(account)).imfo;
     },
     storeImfo(response, amount) {
       // 更新信息
       // 取出 history 并修改
       console.log("?");
-      var old = JSON.parse(window.localStorage.getItem(account));
-      var neww = response.data;
+      const old = JSON.parse(window.localStorage.getItem(account));
+      const neww = response.data;
       neww.vm = amount;
       old.history.push(neww); // 喜加一
       console.log(neww);
@@ -175,7 +174,31 @@ export default {
     },
     transferm() {
       console.log("我要转账");
-      var pri = this.getPri();
+      if (!this.G1 || !this.G2 || !this.P || !this.H) {
+        this.$message('请完整输入接收方公钥账户');
+        return
+      }
+      if (!this.transmoney) {
+        this.$message('请填写使用承诺的数额');
+        return
+      }
+      if (!this.spend) {
+        this.$message('请填写要转出的数额');
+        return
+      }
+      if (this.transmoney < this.spend) {
+        this.$message('转出数额不可大于使用承诺的数额');
+        return
+      }
+      if (!this.moneyProm) {
+        this.$message('请填写承诺cmv');
+        return
+      }
+      if (!this.r) {
+        this.$message('请填写承诺随机数vor');
+        return
+      }
+      const pri = this.getPri();
       this.$message('正在生成：会计平衡证明、监管相等证明、范围证明、密文格式正确证明');
       this.axios.post('http://127.0.0.1:4396/wallet/exchange', {
         sg1: pri.G1,
@@ -197,11 +220,19 @@ export default {
         this.$message.error(response);
         console.log(response);
       });
-
     },
     buym() {
-      console.log("我要购币");
-      var pri = this.getPri();
+      console.log("我要兑换");
+      if (!this.money) {
+        this.$message.error("请填写要兑换的金额");
+        return
+      }
+      const amount = parseInt(this.money)
+      if (amount === 0) {
+        this.$message.error("要兑换的金额需大于0");
+        return
+      }
+      const pri = this.getPri();
       console.log(pri.privatekey);
       this.axios({
         url: 'http://127.0.0.1:4396/wallet/buycoin',
@@ -212,7 +243,7 @@ export default {
           p: pri.P,
           h: pri.publickey,
           x: pri.privatekey,
-          amount: this.money
+          amount: amount
         },
         timeout: '600000'
       }).then((response) => {
@@ -234,7 +265,16 @@ export default {
     },
     recm() {
       console.log("我要收款");
-      var pri = this.getPri();
+      if (this.hash.length === 0) {
+        this.$message.error("请填写交易hash");
+        return
+      }
+
+      if (this.hash.length !== 66) {
+        this.$message.error("未找到指定交易");
+        return
+      }
+      const pri = this.getPri();
       this.axios({
         url: 'http://127.0.0.1:4396/wallet/receive',
         method: 'post',
@@ -248,6 +288,10 @@ export default {
         },
         timeout: '600000'
       }).then((response) => {
+        if (isNaN(response.data.vm) || isNaN(response.data.amount)) {
+          this.$message.error("未找到指定交易");
+          return
+        }
         response.data.amount = parseInt(response.data.amount);
         this.storeImfo(response, parseInt(response.data.amount));
       }).catch((response) => {
@@ -258,7 +302,7 @@ export default {
     changecmps(index) {
       this.cmp = index;
       // 防止小手机转账界面崩坏
-      if (this.cmp == 2) {
+      if (this.cmp === 2) {
         document.getElementById("om").style.top = "10px";
         document.getElementById("om").style.transform = "none";
       } else {
@@ -266,7 +310,7 @@ export default {
         document.getElementById("om").style.transform = "translateY(-50%)";
       }
       // 加载历史
-      if (this.cmp == 4) {
+      if (this.cmp === 4) {
         // 更新
         this.hisList = JSON.parse(window.localStorage.getItem(account)).history;
       }
@@ -313,7 +357,7 @@ export default {
       var sum = 0;
       var his = JSON.parse(window.localStorage.getItem(account)).history;
       for (var i = 0; i < his.length; i++) {
-        if (his[i].vm != undefined) {
+        if (his[i].vm !== undefined) {
           sum = sum + parseInt(his[i].vm);
           console.log(sum);
         }

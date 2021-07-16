@@ -31,7 +31,7 @@ export default {
         // 防止再次填充 list，清空数组
         list.length = 0;
         for(var i = 0; i < storage.length; i++) {
-            if (storage.key(i) != 'loglevel:webpack-dev-server') {
+            if (storage.key(i) !== 'loglevel:webpack-dev-server') {
                 list.push(storage.key(i));
             }
         }        
