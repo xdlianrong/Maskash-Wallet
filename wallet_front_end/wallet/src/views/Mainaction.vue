@@ -70,7 +70,10 @@
         </el-row>
 
         <div id="progress">
-            <el-button v-loading="loading">生成会计平衡证明</el-button>
+            <el-button  v-loading="loading">生成会计平衡证明</el-button>
+            <el-button  v-loading="loading">生成相等证明</el-button>
+            <el-button  v-loading="loading">正在公式</el-button>
+            <el-button  v-loading="loading"></el-button>
         </div>
     </div>
 </template>
@@ -106,25 +109,26 @@ export default {
       spend: '',
       nowm: '',
       accountList,
-      baccount: ''
+      baccount: '',
+      loading: true
     }
   },
-  created: function () {
-    account = this.$route.query.account;
-    if (account === undefined) {
-      this.$message.error({
-        message: '请登录账户',
-        duration: 1400
-      });
-      setTimeout(() => {
-        this.$router.push({
-          path: '/',
-          name: 'Main',
-        })
-      }, 1500);
-    }
-    this.hisList = JSON.parse(window.localStorage.getItem(account)).history;
-  },
+//   created: function () {
+//     account = this.$route.query.account;
+//     if (account === undefined) {
+//       this.$message.error({
+//         message: '请登录账户',
+//         duration: 1400
+//       });
+//       setTimeout(() => {
+//         this.$router.push({
+//           path: '/',
+//           name: 'Main',
+//         })
+//       }, 1500);
+//     }
+//     this.hisList = JSON.parse(window.localStorage.getItem(account)).history;
+//   },
   mounted: function () {
     this.showCoin();
     // 获取本地账户列表
@@ -156,22 +160,6 @@ export default {
   methods: {
     getPri() {
       return JSON.parse(window.localStorage.getItem(account)).imfo;
-    },
-    created: function () {
-        account = this.$route.query.account;
-        // if (account == undefined) {
-        //     this.$message.error({
-        //         message: '请登录账户',
-        //         duration: 1400
-        //     }); 
-        //     setTimeout(() => {
-        //         this.$router.push({
-        //             path: '/',
-        //             name: 'Main',
-        //         })
-        //     }, 1500);   
-        // }
-        this.hisList = JSON.parse(window.localStorage.getItem(account)).history;
     },
     Pub(G1, G2, P, H) {
       this.G1 = G1;
@@ -393,9 +381,17 @@ export default {
 .el-table td, .el-table th {
   text-align: center !important;
 }
+
 #progress {
-    position: absolute;
-    right: 60px;
+  display : flex;
+  margin-right: 60px;
+  align-items: flex-end;
+  flex-direction: column;
+}
+
+#progress button {
+  background: grey;
+  width: 15rem;
 }
 </style>
 <style scoped>

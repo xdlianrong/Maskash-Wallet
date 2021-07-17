@@ -49,47 +49,44 @@ export default {
     }
   },
   methods: {
-    
-    methods: {
-        Account(imfo) {
-            this.imfo = imfo;
-            this.history = new Array();
-        },
-        register() {
-            if (this.id == '' || this.name == '' || this.string == '') {
-                this.$message.error ('提交的信息不能为空');
-            } else {
-                this.axios.post('http://39.106.173.191:4396/wallet/register', {
-                    name: this.name,
-                    id: this.id,
-                    str: this.string
-                }).then((response)=>{
-                    console.log(response);
-                    this.$message.success({
-                        message: '创建成功',
-                        duration: 1500
-                    }); 
-                    // 创建成功后加入 localstorage
-                    var storage = window.localStorage;
-                    response.data;
-                    storage.setItem(this.name, JSON.stringify(new this.Account(response.data)));
-                    console.log(storage);
-                    // 跳转
-                    setTimeout(() => {
-                        this.$router.push({
-                            name: 'Mainaction',
-                            path: '/Mainaction',
-                            query: {
-                                account: this.name,
-                            }
-                        })
-                    }, 1500);
-                }).catch((response)=>{
-                    this.$message.error('创建失败，请重试');
-                    console.log(response);
-                })
-            }
-        }
+    Account(imfo) {
+      this.imfo = imfo;
+      this.history = [];
+    },
+    register() {
+      if (this.id === '' || this.name === '' || this.string === '') {
+        this.$message.error('提交的信息不能为空');
+      } else {
+        this.axios.post('http://127.0.0.1:4396/wallet/register', {
+          name: this.name,
+          id: this.id,
+          str: this.string
+        }).then((response) => {
+          console.log(response);
+          this.$message.success({
+            message: '创建成功',
+            duration: 1500
+          });
+          // 创建成功后加入 localstorage
+          var storage = window.localStorage;
+          response.data;
+          storage.setItem(this.name, JSON.stringify(new this.Account(response.data)));
+          console.log(storage);
+          // 跳转
+          setTimeout(() => {
+            this.$router.push({
+              name: 'Mainaction',
+              path: '/Mainaction',
+              query: {
+                account: this.name,
+              }
+            })
+          }, 1500);
+        }).catch((response) => {
+          this.$message.error('创建失败，请重试');
+          console.log(response);
+        })
+      }
     }
   }
 }
