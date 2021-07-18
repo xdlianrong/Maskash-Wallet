@@ -3,7 +3,7 @@
     <navmenu @changecmp="changecmps" ref="n"></navmenu>
     <el-row type="flex" justify="center" id="om">
       <el-col :xs="20" :sm="15" :md="8" :lg="8" :xl="8" v-show="cmp !== 4">
-        <div v-show="cmp === 1">
+        <div v-show="cmp == 1">
           <p>购买数额:</p>
           <el-input maxlength="10" v-model="money" oninput="value=value.replace(/[^\d]/g,'')"></el-input>
           <mybutton :buttonMsg="buy" @click.native="buym"></mybutton>
@@ -69,7 +69,7 @@
             </el-col>    
         </el-row>
 
-        <div id="progress" v-show="cmp === 1">
+        <div id="progress" v-show="cmp == 1 && show">
 					<el-timeline>
 						<el-timeline-item
 						v-for="(activity, index) in activities"
@@ -119,6 +119,7 @@ export default {
       accountList,
       baccount: '',
       loading: true,
+      show: false,
 			activities: [{
 				content: '开始转出'
 			},{
@@ -270,6 +271,7 @@ export default {
         this.$message.error(response);
         console.log(response);
       });
+      this.show = true;
       this.progress();
       // this.$message.success({
       //   message: '金额加密正确',
@@ -399,7 +401,12 @@ export default {
         ojArr[0].style.borderLeft = "2px solid limegreen";
         ojArr[1].style.backgroundColor = "limegreen";
         console.log(ojArr[1]);
-        }, time);
+        if (i == 7) {
+          setTimeout(() => {
+            this.show = false;
+          }, 1000);
+        }
+      }, time);
     }
   }
 }
