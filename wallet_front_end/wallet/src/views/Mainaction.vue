@@ -138,24 +138,25 @@ export default {
 			}]
     }
   },
-//   created: function () {
-//     account = this.$route.query.account;
-//     if (account === undefined) {
-//       this.$message.error({
-//         message: '请登录账户',
-//         duration: 1400
-//       });
-//       setTimeout(() => {
-//         this.$router.push({
-//           path: '/',
-//           name: 'Main',
-//         })
-//       }, 1500);
-//     }
-//     this.hisList = JSON.parse(window.localStorage.getItem(account)).history;
-//   },
+  created: function () {
+    account = this.$route.query.account;
+    if (account === undefined) {
+      this.$message.error({
+        message: '请登录账户',
+        duration: 1400
+      });
+      setTimeout(() => {
+        this.$router.push({
+          path: '/',
+          name: 'Main',
+        })
+      }, 1500);
+    }
+    this.hisList = JSON.parse(window.localStorage.getItem(account)).history;
+  },
   mounted: function () {
     this.showCoin();
+    console.log("???");
     // 获取本地账户列表
     for (let i = 0; i < window.localStorage.length; i++) {
       const name = window.localStorage.key(i);
