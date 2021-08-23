@@ -11,45 +11,45 @@
 
         <div v-show="cmp === 2">
           <p><span class="t"></span>接收方公钥:</p>
-          <el-input v-model="G1" placeholder="G1"></el-input>
-          <el-input v-model="G2" placeholder="G2" style="margin-top:10px;"></el-input>
-          <el-input v-model="P" placeholder="P" style="margin-top:10px;"></el-input>
-          <el-input v-model="pub" placeholder="pub" style="margin-top:10px;"></el-input>
+          <el-input v-model="G1" placeholder="G1"/>
+          <el-input v-model="G2" placeholder="G2" style="margin-top:10px;"/>
+          <el-input v-model="P" placeholder="P" style="margin-top:10px;"/>
+          <el-input v-model="pub" placeholder="pub" style="margin-top:10px;"/>
           <div style="margin-top:10px;">
             <a>或选择本地账户&emsp;</a>
             <el-select v-model="baccount" placeholder="请选择" clearable>
               <el-option v-for="account in accountList" :value="account" :key="account.key"
-                         :label="account"></el-option>
+                         :label="account"/>
             </el-select>
           </div>
-          <p><span class="t"></span>使用承诺的数额</p>
+          <p><span class="t"/>使用承诺的数额</p>
           <el-input maxlength="10" v-model="transmoney" oninput="value=value.replace(/[^\d]/g,'')"></el-input>
-          <p><span class="t"></span>承诺cmv</p>
-          <el-input v-model="cmv"></el-input>
-          <p><span class="t"></span>随机数vor</p>
-          <el-input v-model="r"></el-input>
+          <p><span class="t"/>承诺cmv</p>
+          <el-input v-model="cmv"/>
+          <p><span class="t"/>随机数vor</p>
+          <el-input v-model="r"/>
           <div style="margin-top:10px;">
             <a>或选择本地承诺&emsp;</a>
             <el-select v-model="bindCM" placeholder="请选择" clearable>
               <el-option v-for="cm in valuableCMList" :value="cm" :key="cm.key"
-                         :label="cm.cmv.slice(0,8)+'... 价值：'+cm.amount"></el-option>
+                         :label="cm.cmv.slice(0,8)+'... 价值：'+cm.amount"/>
             </el-select>
           </div>
-          <p><span class="t"></span>转出数额:</p>
-          <el-input maxlength="10" v-model="spend" oninput="value=value.replace(/[^\d]/g,'')"></el-input>
+          <p><span class="t"/>转出数额:</p>
+          <el-input maxlength="10" v-model="spend" oninput="value=value.replace(/[^\d]/g,'')"/>
           <!-- 上面这些够了，可以返回东西了 -->
-          <mybutton :buttonMsg="transfer" @click.native="transform" style="margin-bottom: 20px"></mybutton>
+          <mybutton :buttonMsg="transfer" @click.native="transform" style="margin-bottom: 20px"/>
         </div>
 
         <div v-show="cmp === 3">
           <p>交易hash</p>
-          <el-input v-model="hash"></el-input>
-          <mybutton :buttonMsg="recv" @click.native="recm"></mybutton>
+          <el-input v-model="hash"/>
+          <mybutton :buttonMsg="recv" @click.native="recm"/>
         </div>
 
         <div v-show="cmp === 5">
-          <mybutton :buttonMsg="showInfo" @click.native="showInfof" class="b1"></mybutton>
-          <mybutton :buttonMsg="signout" @click.native="signoutf"></mybutton>
+          <mybutton :buttonMsg="showInfo" @click.native="showInfof" class="b1"/>
+          <mybutton :buttonMsg="signout" @click.native="signoutf"/>
         </div>
       </el-col>
 
@@ -59,20 +59,16 @@
         <el-table :data="hisList">
           <el-table-column
               prop="amount"
-              label="数额">
-          </el-table-column>
+              label="数额"/>
           <el-table-column
               prop="hash"
-              label="哈希hash">
-          </el-table-column>
+              label="哈希hash"/>
           <el-table-column
               prop="cmv"
-              label="承诺cmv">
-          </el-table-column>
+              label="承诺cmv"/>
           <el-table-column
               prop="vor"
-              label="随机数vor">
-          </el-table-column>
+              label="随机数vor"/>
         </el-table>
       </el-col>
     </el-row>
@@ -101,7 +97,7 @@ import globle from '../globle'
 let account;
 const accountList = []
 // 本账户可用的承诺
-const valuableCMList = [];
+let valuableCMList = [];
 export default {
   components: {
     navmenu,
@@ -178,6 +174,8 @@ export default {
       }
     }
     // 获取本账户所有可用承诺
+    if (valuableCMList.length > 0)
+      valuableCMList = []
     for (let i = 0; i < this.hisList.length; i++) {
       if (this.hisList[i].valuable)
         valuableCMList.push(this.hisList[i]);
@@ -382,11 +380,11 @@ export default {
         },
         timeout: '600000'
       }).then((response) => {
-        if (isNaN(response.data.amount)) {
+        if (isNaN(response.data.coin.amount)) {
           this.$message.error("交易解密失败");
           return
         }
-        this.storeInfo(response, response.data.amount);
+        this.storeInfo(response, response.data.coin.amount);
         this.$message.info("接收成功！");
       }).catch((response) => {
         this.$message.error(response);

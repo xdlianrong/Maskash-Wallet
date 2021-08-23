@@ -95,16 +95,19 @@ func Buycoin(c echo.Context) error {
 	if err != nil {
 		return err
 	}
-	var receipt utils.Receipt
-	json.Unmarshal(body, &receipt)
 
+	var receipt utils.Receipt
+	err = json.Unmarshal(body, &receipt)
+	if err != nil {
+		return err
+	}
 	if receipt.Cmv == "" || receipt.Epkrc1 == "" || receipt.Epkrc2 == "" || receipt.Hash == "" {
 		return c.JSON(http.StatusBadRequest, ErrorValue)
 	} else {
 		// 购买成功,随机数解密
 		privKey := utils.CreatePriKey(w.G1, w.G2, w.P, w.H, w.X)
 		coin := decryptCoinReceipt(receipt, privKey, w.Amount)
-		utils.MineTx(model.EthPort, coin.Hash)
+		_, _ = utils.MineTx(model.EthPort, coin.Hash)
 		rpcTx, _ := utils.EthGetTransactionByHash(model.EthPort, receipt.Hash)
 		resBody := utils.CoinNTx{
 			Coin: coin,
@@ -145,7 +148,7 @@ func ExchangeCoin(c echo.Context) error {
 	if err != nil {
 		return c.JSON(http.StatusOK, err.Error())
 	}
-	utils.MineTx(model.EthPort, txHash)
+	_, _ = utils.MineTx(model.EthPort, txHash)
 	rpcTx, err := utils.EthGetTransactionByHash(model.EthPort, txHash)
 	tx := rpcTx.Result
 	resCoin := utils.Coin{
@@ -176,13 +179,17 @@ func Receive(c echo.Context) error {
 	tx := rpcTx.Result
 	amountHex := decryptValue(tx.EvsBsC1, tx.EvsBsC2, privKey)
 	s, _ := strconv.ParseInt(amountHex, 0, 32)
-	returnCoin := utils.Coin{
+	resCoin := utils.Coin{
 		Cmv:    tx.CmO,
 		Vor:    decrypt(tx.CmSRC1, tx.CmSRC2, privKey),
 		Hash:   w.Hash,
 		Amount: int(s),
 	}
-	return c.JSON(http.StatusOK, returnCoin)
+	resBody := utils.CoinNTx{
+		Coin: resCoin,
+		TX:   rpcTx,
+	}
+	return c.JSON(http.StatusOK, resBody)
 }
 func decryptCoinReceipt(recript utils.Receipt, priv ecc.PrivateKey, amount int) utils.Coin {
 	return utils.Coin{
